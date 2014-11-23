@@ -56,7 +56,7 @@ public class NavigationDrawerFragment extends Fragment {
     private Button mDrawerSettingsButton;
     private View mFragmentContainerView;
 
-    private int mCurrentSelectedPosition = 0;
+    private int mCurrentSelectedPosition = 1;
     private boolean mFromSavedInstanceState;
     private boolean mUserLearnedDrawer;
 
@@ -106,6 +106,7 @@ public class NavigationDrawerFragment extends Fragment {
                 android.R.layout.simple_list_item_activated_1,
                 android.R.id.text1,
                 new String[]{
+                		getString(R.string.btn_event_create),
                         getString(R.string.title_public),
                         getString(R.string.title_private),
                         getString(R.string.title_history),
