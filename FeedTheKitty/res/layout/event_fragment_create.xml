@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:bootstrap="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/scrollView1"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content" >
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        tools:context="umd.cmsc.feedthekitty.MainActivity$EventCreateFragment" >
+
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/event_create_edit_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:hint="@string/event_create_name"
+            bootstrap:be_state="default" >
+
+            <requestFocus />
+        </com.beardedhen.androidbootstrap.BootstrapEditText>
+
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/event_create_edit_desc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_edit_name"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:hint="@string/event_create_desc"
+            bootstrap:be_state="default" />
+
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/event_create_edit_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_edit_desc"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:hint="@string/event_create_loc"
+            bootstrap:be_state="default" />
+
+        <com.beardedhen.androidbootstrap.BootstrapEditText
+            android:id="@+id/event_create_edit_hashtag"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_edit_loc"
+            android:layout_marginTop="20dp"
+            android:gravity="center"
+            android:hint="@string/event_create_hashtag"
+            bootstrap:be_state="default" />
+
+        <TextView
+            android:id="@+id/event_create_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_edit_hashtag"
+            android:text="@string/event_create_date" />
+
+        <DatePicker
+            android:id="@+id/event_create_pick_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_date"
+            android:calendarViewShown="false" />
+
+        <TextView
+            android:id="@+id/event_create_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_pick_date"
+            android:text="@string/event_create_time" />
+
+        <TimePicker
+            android:id="@+id/event_create_pick_time"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_time" />
+
+        <TextView
+            android:id="@+id/event_create_visibility"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_pick_time"
+            android:text="@string/event_create_visibility" />
+
+        <RadioGroup
+            android:id="@+id/event_create_radio"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_visibility" >
+
+            <RadioButton
+                android:id="@+id/event_create_radio_private"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:checked="true"
+                android:text="@string/event_create_radio_private" />
+
+            <RadioButton
+                android:id="@+id/event_create_radio_public"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/event_create_radio_public" />
+        </RadioGroup>
+
+        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/btn_event_image_upload"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/event_create_radio"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/btn_image_upload"
+            bootstrap:bb_icon_left="fa-camera"
+            bootstrap:bb_type="success" >
+        </com.beardedhen.androidbootstrap.BootstrapButton>
+
+        <Button
+            android:id="@+id/btn_event_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/btn_event_image_upload"
+            android:text="@string/btn_event_create" />
+    </RelativeLayout>
+
+</ScrollView>

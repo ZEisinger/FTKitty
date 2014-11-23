@@ -8,6 +8,8 @@ import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
 
+import EventFragments.EventListFragment;
+import EventFragments.PrivateEventListFragment;
 import android.app.Activity;
 
 import android.app.ActionBar;
@@ -129,9 +131,15 @@ public class MainActivity extends Activity
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
     	switch (position) {
-        	case 1:
+        	case 0:
+        		fragmentManager.beginTransaction()
+				.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();				
+        		break;
+            case 1:
+            	fragmentManager.beginTransaction()
+            	.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+            	break;
             case 2:
-            case 3:
 		        //fragmentManager.beginTransaction()
 		          //      .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
 		            //    .commit();
@@ -146,13 +154,13 @@ public class MainActivity extends Activity
 
     public void onSectionAttached(int number) {
         switch (number) {
+        	case 0:
+        		mTitle = getString(R.string.title_public);
+        		break;
             case 1:
-                mTitle = getString(R.string.title_public);
-                break;
-            case 2:
                 mTitle = getString(R.string.title_private);
                 break;
-            case 3:
+            case 2:
                 mTitle = getString(R.string.title_history);
                 break;
         }
