@@ -9,20 +9,10 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="umd.cmsc.feedthekitty.MainActivity$EventListFragment" >
 
-    <com.beardedhen.androidbootstrap.BootstrapButton
-        android:id="@+id/btn_event_create"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="10dp"
-        android:text="@string/btn_event_create"
-        bootstrap:bb_icon_right="fa-android"
-        bootstrap:bb_type="success" />
-
     <ListView
         android:id="@+id/event_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@id/btn_event_create"
         android:cacheColorHint="@android:color/transparent"
         android:clickable="true"
         android:divider="@null"

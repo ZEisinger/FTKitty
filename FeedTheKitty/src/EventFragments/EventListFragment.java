@@ -34,7 +34,6 @@ public class EventListFragment extends Fragment{
 
 	private ListView eventList;
 	public static EventAdapter eventAdapter;
-	private BootstrapButton btnEventCreate;
 	
 	// Set up some information about the mQuoteView TextView 
 	@Override
@@ -44,18 +43,6 @@ public class EventListFragment extends Fragment{
 		getActivity().setTitle("Public Events");
 
 		eventList = (ListView) getActivity().findViewById(R.id.event_list_view);
-		
-		btnEventCreate = (BootstrapButton) getActivity().findViewById(R.id.btn_event_create);
-		btnEventCreate.setOnClickListener(new OnClickListener() {
-
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				getFragmentManager().beginTransaction()
-				.replace(R.id.container, new EventCreateFragment()).addToBackStack("event_create").commit();
-			}
-
-		});
 
 		eventAdapter = new EventAdapter(getActivity().getApplicationContext(), R.layout.event_item);
 
