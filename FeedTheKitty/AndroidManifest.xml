@@ -16,8 +16,10 @@
         android:label="@string/app_name"
         android:theme="@style/AppTheme" >
         <activity
-            android:name=".LoginActivity"
-            android:label="@string/app_name" >
+            android:name="main.LoginActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait"
+            android:theme="@android:style/Theme.NoTitleBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -30,16 +32,24 @@
             android:value="@string/facebook_app_id" />
 
         <activity
-            android:name=".MainActivity"
-            android:label="@string/app_name" >
+            android:name="main.MainActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
             android:name="com.facebook.LoginActivity"
-            android:label="@string/title_facebook_login" >
+            android:label="@string/title_facebook_login"
+            android:screenOrientation="portrait" >
         </activity>
         <activity
-            android:name=".VenmoWebViewActivity"
-            android:label="@string/title_activity_venmo_web_view" >
+            android:name="main.VenmoWebViewActivity"
+            android:label="@string/title_activity_venmo_web_view"
+            android:screenOrientation="portrait" >
+        </activity>
+        <activity
+            android:name="history.Events$EventDetailActivity"
+            android:label="@string/app_name"
+            android:screenOrientation="portrait" >
         </activity>
     </application>
 

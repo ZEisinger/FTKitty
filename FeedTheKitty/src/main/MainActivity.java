@@ -1,8 +1,6 @@
-package umd.cmsc.feedthekitty;
+package main;
 
-// TODO: https://developers.facebook.com/docs/android/login-with-facebook/v2.2
-// TODO: http://www.w3schools.com/php/php_file_upload.asp
-// TODO: Application drawer
+import umd.cmsc.feedthekitty.R;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
@@ -48,7 +46,7 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.feed_the_kitty);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -239,7 +237,7 @@ public class MainActivity extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            View rootView = inflater.inflate(R.layout.main_fragment, container, false);
             return rootView;
         }
 

@@ -1,4 +1,4 @@
-package umd.cmsc.feedthekitty;
+package main;
 
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;

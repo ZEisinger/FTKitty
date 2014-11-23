@@ -18,7 +18,7 @@ import twitter4j.TwitterException;
 import twitter4j.TwitterFactory;
 import twitter4j.conf.ConfigurationBuilder;
 import umd.cmsc.feedthekitty.R;
-import umd.cmsc.feedthekitty.VenmoWebViewActivity;
+import main.VenmoWebViewActivity;
 import Events.EventAdapter;
 import Events.TwitterAdapter;
 import Venmo.VenmoLibrary;

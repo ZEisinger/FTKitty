@@ -1,14 +1,17 @@
-package umd.cmsc.feedthekitty;
+package main;
 
 
+import umd.cmsc.feedthekitty.R;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.text.Html;
 import android.content.SharedPreferences;
 import android.content.res.Configuration;
+import android.graphics.Shader.TileMode;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
 import android.view.LayoutInflater;
@@ -93,7 +96,7 @@ public class NavigationDrawerFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
         mDrawerRelativeLayout = (RelativeLayout) inflater.inflate(
-                R.layout.fragment_navigation_drawer, container, false);
+                R.layout.navigation_drawer_fragment, container, false);
         mDrawerListView = (ListView) mDrawerRelativeLayout.findViewById(R.id.nav_drawer);
         mDrawerListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -112,7 +115,7 @@ public class NavigationDrawerFragment extends Fragment {
                         getString(R.string.title_history),
                 }));
         mDrawerListView.setItemChecked(mCurrentSelectedPosition, true);
-        mDrawerSettingsButton = (Button) mDrawerRelativeLayout.findViewById(R.id.settings_button);
+        mDrawerSettingsButton = (Button) mDrawerRelativeLayout.findViewById(R.id.nav_settings_button);
         mDrawerSettingsButton.setOnClickListener(new View.OnClickListener() {
         	@Override
         	public void onClick(View view) {
@@ -166,6 +169,7 @@ public class NavigationDrawerFragment extends Fragment {
             @Override
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
+                getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ getString(R.string.app_name) +"</font>"));
                 if (!isAdded()) {
                     return;
                 }
