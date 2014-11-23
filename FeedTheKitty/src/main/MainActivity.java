@@ -1,5 +1,10 @@
 package main;
 
+// TODO: https://developers.facebook.com/docs/android/login-with-facebook/v2.2
+// TODO: http://www.w3schools.com/php/php_file_upload.asp
+// TODO: Application drawer
+
+//import history.Fragments.EventListFragment;
 import umd.cmsc.feedthekitty.R;
 
 import com.facebook.Session;
@@ -15,7 +20,12 @@ import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
+import android.support.v4.widget.DrawerLayout;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
@@ -24,6 +34,9 @@ import android.view.ViewGroup;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.widget.DrawerLayout;
 
+import com.facebook.Session;
+import com.facebook.SessionState;
+import com.facebook.UiLifecycleHelper;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -31,12 +44,14 @@ public class MainActivity extends Activity
 	private static final String TAG = "MainActivity";
 	
     /**
-     * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
+	 * Fragment managing the behaviors, interactions and presentation of the
+	 * navigation drawer.
      */
     private NavigationDrawerFragment mNavigationDrawerFragment;
 
     /**
-     * Used to store the last screen title. For use in {@link #restoreActionBar()}.
+	 * Used to store the last screen title. For use in
+	 * {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
     private DrawerLayout mDrawerLayout;
@@ -46,11 +61,14 @@ public class MainActivity extends Activity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+		getActionBar().setBackgroundDrawable(new ColorDrawable(Color
+				.rgb(163, 73, 164)));
         setContentView(R.layout.feed_the_kitty);
 
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
+		getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ mTitle +"</font>"));
         
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         
@@ -65,13 +83,13 @@ public class MainActivity extends Activity
             /** Called when a drawer has settled in a completely closed state. */
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getActionBar().setTitle(mTitle);
+				getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ mTitle +"</font>"));
             }
 
             /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getActionBar().setTitle(mTitle);
+				getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ mTitle +"</font>"));
             }
         };
 
@@ -129,6 +147,8 @@ public class MainActivity extends Activity
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
         FragmentManager fragmentManager = getFragmentManager();
+		onSectionAttached(position);
+		getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ mTitle +"</font>"));
     	switch (position) {
         	case 0:
         		fragmentManager.beginTransaction()
@@ -143,14 +163,14 @@ public class MainActivity extends Activity
             	.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
             	break;
             case 3:
-		        //fragmentManager.beginTransaction()
-		          //      .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
-		            //    .commit();
-		        //break;
-            case NavigationDrawerFragment.SETTINGS_ITEM:
 		        fragmentManager.beginTransaction()
-		                .replace(R.id.container, SettingsFragment.newInstance(position))
-		                .commit();
+					.replace(R.id.container, new history.Fragments.EventListFragment()).commit();
+				break;
+            case NavigationDrawerFragment.SETTINGS_ITEM:
+			fragmentManager
+					.beginTransaction()
+					.replace(R.id.container,
+							SettingsFragment.newInstance(position)).commit();
 		        break;
     	}
     }
@@ -176,7 +196,7 @@ public class MainActivity extends Activity
         ActionBar actionBar = getActionBar();
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_STANDARD);
         actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setTitle(mTitle);
+		getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ mTitle +"</font>"));
     }
 
     @Override
@@ -191,15 +211,16 @@ public class MainActivity extends Activity
         return super.onOptionsItemSelected(item);
     }
 	
-
 	private Session.StatusCallback callback = new Session.StatusCallback() {
 	    @Override
-	    public void call(Session session, SessionState state, Exception exception) {
+		public void call(Session session, SessionState state,
+				Exception exception) {
 	        onSessionStateChange(session, state, exception);
 	    }
 	};
 	
-	protected void onSessionStateChange(final Session session, SessionState state, Exception exception) {
+	protected void onSessionStateChange(final Session session,
+			SessionState state, Exception exception) {
 	    if (state.isOpened()) {
 	        Log.i(TAG, "Logged in...");
 	    } else if (state.isClosed()) {
@@ -237,7 +258,8 @@ public class MainActivity extends Activity
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                 Bundle savedInstanceState) {
-            View rootView = inflater.inflate(R.layout.main_fragment, container, false);
+			View rootView = inflater.inflate(R.layout.main_fragment, container,
+					false);
             return rootView;
         }
 
