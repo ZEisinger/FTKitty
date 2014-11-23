@@ -1,0 +1,26 @@
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+	android:id="@+id/left_drawer"
+	android:layout_width="match_parent"
+	android:layout_height="match_parent"
+	android:layout_gravity="start">
+
+	<ListView
+	    android:id="@+id/nav_drawer"
+	    android:layout_width="match_parent"
+	    android:layout_height="match_parent"
+	    android:background="#cccc"
+	    android:choiceMode="singleChoice"
+	    android:divider="@android:color/transparent"
+	    android:dividerHeight="0dp"
+	    tools:context="umd.cmsc.feedthekitty.NavigationDrawerFragment" />
+
+	<Button
+	    android:id="@+id/settings_button"
+	    android:layout_width="match_parent"
+	    android:layout_height="70dp"
+	    android:layout_alignParentBottom="true"
+	    android:layout_margin="5dp"
+	    android:text="@+string/settings_button"/>
+
+</RelativeLayout>
