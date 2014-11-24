@@ -60,14 +60,13 @@ public class EventViewFragment extends Fragment{
 		String eventDesc = getArguments().getString("event_desc");
 		final String eventHashTag = getArguments().getString("event_hash_tag");
 
-		txtEventName = (TextView) getActivity().findViewById(R.id.event_txt_name);
-		txtEventName.setText(eventName);
+		getActivity().getActionBar().setTitle(eventName);
 		
 		tweetView = (ListView) getActivity().findViewById(R.id.twitter_list_view);
 		tweetAdapter = new TwitterAdapter(getActivity().getApplicationContext(), R.layout.twitter_item);
 		tweetView.setAdapter(tweetAdapter);
 
-		txtEventDesc = (TextView) getActivity().findViewById(R.id.event_txt_desc);
+		txtEventDesc = (TextView) getActivity().findViewById(R.id.event_detail_description);
 		txtEventDesc.setText(eventDesc);
 
 		getTweets(eventHashTag);
@@ -81,7 +80,7 @@ public class EventViewFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				Intent tweetIntent = new Intent(Intent.ACTION_SEND);
-				tweetIntent.putExtra(Intent.EXTRA_TEXT, "#"+eventHashTag);
+				tweetIntent.putExtra(Intent.EXTRA_TEXT, eventHashTag);
 				tweetIntent.setType("text/plain");
 
 				PackageManager packManager = getActivity().getPackageManager();

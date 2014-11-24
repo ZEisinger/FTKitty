@@ -7,6 +7,7 @@
     <string name="title_private">Private</string>
     <string name="title_history">History</string>
     <string name="title_facebook_login">Facebook Login</string>
+    <string name="title_activity_venmo">Venmo</string>
 
     <!-- Navigation and Settings -->
     <string name="navigation_drawer_open">Open navigation drawer</string>
@@ -14,21 +15,20 @@
     <string name="settings">Settings</string>
 
     <!-- History -->
-    <string name="history_icon_description">Icon of the Event</string>
-    <string name="history_detail_details">Details:</string>
     <string name="history_detail_end">Event is ended</string>
 
     <!-- Resources -->
     <string name="facebook_app_id">681451701962786</string>
     <string name="connect_facebook">Connect with Facebook</string>
-    <string name="title_facebook_login">Facebook Login</string>
-    <string name="hello_world">Hello world!</string>
+    <string name="icon_description">Icon of the Event</string>
+    <string name="detail_text">Details:</string>
     <string name="settings_button">Settings</string>
+
+    <!-- Event -->
     <string name="event_add">Add Event</string>
-    <string name="btn_event_text_donate">Donate</string>
+    <string name="donate_button_text">Donate</string>
     <string name="payment_success_base">Payment Successful!</string>
     <string name="payment_fail">Payment failed!</string>
-    <string name="title_activity_venmo">Venmo</string>
     <string name="event_create_name">Event Name (required)</string>
     <string name="event_create_desc">Description (required)</string>
     <string name="event_create_loc">Location (required)</string>
@@ -40,7 +40,7 @@
     <string name="event_create_radio_private">Private</string>
     <string name="btn_event_create">Create Event</string>
     <string name="btn_private_event">Private Event</string>
-    <string name="btn_post_twitter">Post to Twitter</string>
+    <string name="btn_post_twitter">Tweet It</string>
     <string name="error_empty">This field cannot be empty</string>
     <string name="btn_image_upload">Upload Image</string>
     <string name="title_activity_venmo_web_view">Venmo</string>

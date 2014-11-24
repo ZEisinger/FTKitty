@@ -5,6 +5,7 @@ package main;
 // TODO: Application drawer
 
 //import history.Fragments.EventListFragment;
+import history.Fragments.HistoryListFragment;
 import umd.cmsc.feedthekitty.R;
 
 import com.facebook.Session;
@@ -164,7 +165,7 @@ public class MainActivity extends Activity
             	break;
             case 3:
 		        fragmentManager.beginTransaction()
-					.replace(R.id.container, new history.Fragments.EventListFragment()).commit();
+					.replace(R.id.container, new HistoryListFragment()).addToBackStack("event_history").commit();
 				break;
             case NavigationDrawerFragment.SETTINGS_ITEM:
 			fragmentManager

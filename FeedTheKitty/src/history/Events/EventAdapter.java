@@ -1,24 +1,15 @@
 package history.Events;
 
-import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 
 import umd.cmsc.feedthekitty.R;
-
 import android.content.Context;
-import android.content.Intent;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
-import android.widget.AdapterView.OnItemClickListener;
 
 public class EventAdapter extends ArrayAdapter<EventItem>{
 	private static String TAG = "EventAdapter";
@@ -75,28 +66,12 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 			viewHolder = (EventViewHolder) row.getTag();
 		}
 		
-		final EventItem event = getItem(position);
+		EventItem event = getItem(position);
 		
 		viewHolder.eventName.setText(event.getEventName());
 		viewHolder.eventLocation.setText(event.getEventLocation());
 		viewHolder.eventDescription.setText(event.getEventDescription());
 		viewHolder.eventDate.setText(event.getEventDate());
-		
-		row.setOnClickListener(new OnClickListener() {
-			
-			@Override
-			public void onClick(View v) {
-				// TODO Auto-generated method stub
-				final Context context = EventAdapter.this.getContext();
-				Intent intent = new Intent(context,
-						EventDetailActivity.class);
-				Intent eventIntent = event.packageToIntent();
-				intent.putExtras(eventIntent);
-				intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-				context.startActivity(intent);
-				return;
-			}
-		});
 		
 		return row;
 	}

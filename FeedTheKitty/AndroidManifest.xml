@@ -46,11 +46,6 @@
             android:label="@string/title_activity_venmo_web_view"
             android:screenOrientation="portrait" >
         </activity>
-        <activity
-            android:name="history.Events$EventDetailActivity"
-            android:label="@string/app_name"
-            android:screenOrientation="portrait" >
-        </activity>
     </application>
 
 </manifest>

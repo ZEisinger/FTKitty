@@ -56,8 +56,8 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 			row = inflater.inflate(R.layout.event_item, parent, false);
 			
 			viewHolder = new EventViewHolder();
-			viewHolder.eventName = (TextView) row.findViewById(R.id.event_txt_name);
-			viewHolder.eventDesc = (TextView) row.findViewById(R.id.event_txt_desc);
+			viewHolder.eventName = (TextView) row.findViewById(R.id.event_name);
+			viewHolder.eventDesc = (TextView) row.findViewById(R.id.event_description);
 			row.setTag(viewHolder);
 		}else{
 			viewHolder = (EventViewHolder) row.getTag();

@@ -28,7 +28,7 @@
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:background="#CCCCCC"
-                android:contentDescription="@string/history_icon_description"
+                android:contentDescription="@string/icon_description"
                 android:padding="8dp" />
         </LinearLayout>
 
@@ -74,7 +74,7 @@
         android:id="@+id/history_detail_segment2"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight=".29"
+        android:layout_weight=".6"
         android:background="#08000000"
         android:orientation="vertical"
         android:weightSum="1" >
@@ -85,7 +85,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:singleLine="true"
-            android:text="@string/history_detail_details"
+            android:text="@string/detail_text"
             android:textSize="18sp"
             android:textStyle="bold"
             android:typeface="sans" />
@@ -108,40 +108,6 @@
 
     <LinearLayout
         android:id="@+id/history_detail_segment3"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".29"
-        android:background="#08000000"
-        android:orientation="vertical"
-        android:weightSum="1" >
-
-        <TextView
-            android:id="@+id/history_detail_hashtag_description"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true"
-            android:textSize="18sp"
-            android:textStyle="bold"
-            android:typeface="sans" />
-
-        <TextView
-            android:id="@+id/history_detail_hashtag"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="end"
-            android:singleLine="true" />
-    </LinearLayout>
-
-    <LinearLayout
-        android:id="@+id/history_detail_border_line2"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_weight=".01"
-        android:orientation="vertical" />
-
-    <LinearLayout
-        android:id="@+id/history_detail_segment4"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".14"
