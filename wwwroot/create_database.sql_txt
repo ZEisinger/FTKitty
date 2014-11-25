@@ -1,0 +1,17 @@
+CREATE TABLE events
+(
+
+id INT PRIMARY KEY AUTO_INCREMENT,
+username VARCHAR(511),
+event_name VARCHAR(255),
+description VARCHAR(1023),
+location VARCHAR(127),
+hashtag VARCHAR(31),
+event_date VARCHAR(31),
+event_time VARCHAR(31),
+vis_public BIT,
+image_name VARCHAR(127),
+payment_email VARCHAR(63),
+end BIT
+
+);
