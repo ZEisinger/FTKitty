@@ -30,7 +30,7 @@
     <string name="payment_success_base">Payment Successful!</string>
     <string name="payment_fail">Payment failed!</string>
     <string name="event_create_name">Event Name (required)</string>
-    <string name="event_create_desc">Description (required)</string>
+    <string name="event_create_desc">Description (optional)</string>
     <string name="event_create_loc">Location (required)</string>
     <string name="event_create_hashtag">Hashtag (optional)</string>
     <string name="event_create_date">Event Date:</string>

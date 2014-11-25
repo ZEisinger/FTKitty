@@ -1,6 +1,8 @@
 package EventFragments;
 
 import java.io.File;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
@@ -23,32 +25,38 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
+import android.widget.TimePicker;
 
 public class EventCreateFragment extends Fragment{
-	
+
 	private Button btnCreateEvent;
 	private BootstrapEditText txtEventName;
 	private BootstrapEditText txtEventDesc;
 	private BootstrapEditText txtEventLoc;
 	private BootstrapEditText txtHashTag;
 	private BootstrapButton btnImageUpload;
+	private DatePicker eventDate;
+	private TimePicker eventTime;
 	private RadioGroup visibilityGroup;
 	private RadioButton radioPublic, radioPrivate;
 	private String selectedImagePath;
-	
+	private String imageName;
+	private String paymentEmail;
+
 	private static final int SELECT_PICTURE = 1;
 
-		
+
 	// Set up some information about the mQuoteView TextView 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
 
 		getActivity().setTitle("Create Event");
-		
+
 		txtEventName = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_name);
 		txtEventDesc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_desc);
 		txtEventLoc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_loc);
@@ -56,7 +64,9 @@ public class EventCreateFragment extends Fragment{
 		visibilityGroup = (RadioGroup) getActivity().findViewById(R.id.event_create_radio);
 		radioPublic = (RadioButton) getActivity().findViewById(R.id.event_create_radio_public);
 		radioPrivate = (RadioButton) getActivity().findViewById(R.id.event_create_radio_private);
-		
+		eventDate = (DatePicker) getActivity().findViewById(R.id.event_create_pick_date);
+		eventTime = (TimePicker) getActivity().findViewById(R.id.event_create_pick_time); 
+
 		btnImageUpload = (BootstrapButton) getActivity().findViewById(R.id.btn_event_image_upload);
 		btnImageUpload.setOnClickListener(new OnClickListener(){
 
@@ -71,14 +81,14 @@ public class EventCreateFragment extends Fragment{
 			}
 
 		});
-		
+
 		txtEventName.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -86,24 +96,24 @@ public class EventCreateFragment extends Fragment{
 					int count) {
 				// TODO Auto-generated method stub
 				txtEventName.setDefault();
-				
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
-		
+
 		txtEventDesc.addTextChangedListener(new TextWatcher() {
 
 			@Override
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -111,15 +121,15 @@ public class EventCreateFragment extends Fragment{
 					int count) {
 				// TODO Auto-generated method stub
 				txtEventDesc.setDefault();
-				
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
 
 		txtEventLoc.addTextChangedListener(new TextWatcher() {
@@ -128,7 +138,7 @@ public class EventCreateFragment extends Fragment{
 			public void beforeTextChanged(CharSequence s, int start, int count,
 					int after) {
 				// TODO Auto-generated method stub
-				
+
 			}
 
 			@Override
@@ -136,17 +146,17 @@ public class EventCreateFragment extends Fragment{
 					int count) {
 				// TODO Auto-generated method stub
 				txtEventLoc.setDefault();
-				
+
 			}
 
 			@Override
 			public void afterTextChanged(Editable s) {
 				// TODO Auto-generated method stub
-				
+
 			}
-			
+
 		});
-		
+
 		btnCreateEvent = (Button) getActivity().findViewById(R.id.btn_event_submit);
 		btnCreateEvent.setOnClickListener(new OnClickListener(){
 
@@ -154,32 +164,67 @@ public class EventCreateFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 				int checkedID = visibilityGroup.getCheckedRadioButtonId();
-				
+				String visibility = "private";
+				String date = getDateFromDatePicker(eventDate);
+				String time = getTimeFromTimePicker(eventTime);
+				boolean flag = false;
+
+
 				if(txtEventName.getText().toString().isEmpty()){
 					txtEventName.setError(getString(R.string.error_empty));
 					txtEventName.setDanger();
+					flag = false;
+				}else{
+					flag = true;
 				}
-				
-				if(txtEventDesc.getText().toString().isEmpty()){
-					txtEventDesc.setError(getString(R.string.error_empty));
-					txtEventDesc.setDanger();
-				}
-				
+
 				if(txtEventLoc.getText().toString().isEmpty()){
 					txtEventLoc.setError(getString(R.string.error_empty));
 					txtEventLoc.setDanger();
+					flag = false;
+				}else{
+					flag = true;
 				}
-				
-//				if(checkedID == radioPrivate.getId()){
-//					EventItem privateEvent = new EventItem(txtEventName.getText().toString(),
-//							txtEventDesc.getText().toString());
-//					//PrivateEventListFragment.privateEventAdapter.add(privateEvent);
-//				}
+
+				if(checkedID == radioPublic.getId()){
+					visibility = "public";
+				}
+				Log.d("FLAG","Flag: " + flag);
+				if(flag){
+					Ion.with(getActivity())
+					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
+					.setBodyParameter("username", "steven")
+					.setBodyParameter("event_name", txtEventName.getText().toString())
+					.setBodyParameter("description", txtEventDesc.getText().toString())
+					.setBodyParameter("location", txtEventLoc.getText().toString())
+					.setBodyParameter("hashtag", "#"+txtHashTag.getText().toString())
+					.setBodyParameter("event_date", date)
+					.setBodyParameter("event_time", time)
+					.setBodyParameter("visibility", visibility)
+					.setBodyParameter("image_name", "bob.png")
+					.setBodyParameter("payment_email", "stevenberger101@gmail.com")
+					.setBodyParameter("end", "false")
+					.asString()
+					.setCallback(new FutureCallback<String>(){
+
+						@Override
+						public void onCompleted(Exception e, String result) {
+							// TODO Auto-generated method stub
+							if (e != null) {
+								Log.d("TAG", "Error: " + e.getMessage());
+								return;
+							}
+							Log.d("CREATE", "JSON: " + result);
+						}
+
+					});
+				}
 			}
-			
+
+
 		});
-		
-		
+
+
 	}
 
 	// Called to create the content view for this Fragment
@@ -191,7 +236,7 @@ public class EventCreateFragment extends Fragment{
 		// The last parameter is false because the returned view does not need to be attached to the container ViewGroup
 		return inflater.inflate(R.layout.event_fragment_create, container, false);
 	}
-	
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == getActivity().RESULT_OK) {
 			if (requestCode == SELECT_PICTURE) {
@@ -200,31 +245,61 @@ public class EventCreateFragment extends Fragment{
 				Log.d("TAG", "FILE: " + selectedImagePath);
 				final File fileToUpload = new File(selectedImagePath);
 				Ion.with(getActivity())
-				            .load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
-				            .setTimeout(60 * 60 * 1000)
-				            .setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
-				            .asString()
-				            .setCallback(new FutureCallback<String>() {
-				                @Override
-				                public void onCompleted(Exception e, String result) {
-				                    // When the loop is finished, updates the notification
-				                    if (e != null) {
-				                    	Log.d("TAG", "Error: " + e.getMessage());
-				                    	return;
-				                    }
-				                    Log.d("IMAGE", "JSON: " + result);
-				                }
-				            });
+				.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
+				.setTimeout(60 * 60 * 1000)
+				.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
+				.asString()
+				.setCallback(new FutureCallback<String>() {
+					@Override
+					public void onCompleted(Exception e, String result) {
+						// When the loop is finished, updates the notification
+						if (e != null) {
+							Log.d("TAG", "Error: " + e.getMessage());
+							return;
+						}
+						Log.d("IMAGE", "JSON: " + result);
+					}
+				});
 			}
 		}
 	}
-	
+
 	public String getRealPathFromURI(Uri uri) {
-	    Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null); 
-	    cursor.moveToFirst(); 
-	    int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA); 
-	    return cursor.getString(idx); 
+		Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null); 
+		cursor.moveToFirst(); 
+		int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA); 
+		return cursor.getString(idx); 
 	}
+
+	private String getDateFromDatePicker(DatePicker datePicker){
+
+		long dateTime = datePicker.getCalendarView().getDate();
+		Date date = new Date(dateTime);
+
+		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
+		String dateString = sdf.format(date);
+
+		return dateString;
+	}
+	
+    private String getTimeFromTimePicker(TimePicker timePicker){
+        int hour = timePicker.getCurrentHour();
+        int minutes = timePicker.getCurrentMinute();
+        boolean isPM = (hour / 12) > 0;
+        hour %= 12;
+        String strHour = String.format("%02d", hour);
+        String strMinutes = String.format("%02d", minutes);
+
+        String msg = strHour + ":" + strMinutes;
+
+        if(isPM){
+            msg += " PM";
+        }else{
+            msg += " AM";
+        }
+
+        return msg;
+    }
 
 }
 
