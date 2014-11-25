@@ -115,20 +115,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/event_create_radio"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:layout_marginTop="20dp"
+            android:paddingRight="50dp"
+            android:paddingLeft="10dp"
+            android:paddingEnd="50dp"
             android:text="@string/btn_image_upload"
             bootstrap:bb_icon_left="fa-camera"
             bootstrap:bb_type="success" >
         </com.beardedhen.androidbootstrap.BootstrapButton>
+        
+        <ImageView 
+            android:id="@+id/image_view_upload"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_toRightOf="@id/btn_event_image_upload"
+            android:layout_below="@id/event_create_radio"/>
 
-        <Button
+        <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/btn_event_submit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_event_image_upload"
-            android:text="@string/btn_event_create" />
+            android:layout_below="@id/image_view_upload"
+            android:layout_marginTop="20dp"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:text="@string/btn_event_create" 
+            bootstrap:bb_type="primary"/>
     </RelativeLayout>
 
 </ScrollView>

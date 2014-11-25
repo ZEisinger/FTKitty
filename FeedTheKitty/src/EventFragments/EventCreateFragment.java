@@ -4,6 +4,10 @@ import java.io.File;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.koushikdutta.async.future.FutureCallback;
@@ -11,9 +15,12 @@ import com.koushikdutta.ion.Ion;
 
 import umd.cmsc.feedthekitty.R;
 import Events.EventItem;
+import Venmo.Messages;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,6 +33,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,7 +41,7 @@ import android.widget.TimePicker;
 
 public class EventCreateFragment extends Fragment{
 
-	private Button btnCreateEvent;
+	private BootstrapButton btnCreateEvent;
 	private BootstrapEditText txtEventName;
 	private BootstrapEditText txtEventDesc;
 	private BootstrapEditText txtEventLoc;
@@ -41,6 +49,7 @@ public class EventCreateFragment extends Fragment{
 	private BootstrapButton btnImageUpload;
 	private DatePicker eventDate;
 	private TimePicker eventTime;
+	private ImageView uploadPreview;
 	private RadioGroup visibilityGroup;
 	private RadioButton radioPublic, radioPrivate;
 	private String selectedImagePath;
@@ -66,6 +75,7 @@ public class EventCreateFragment extends Fragment{
 		radioPrivate = (RadioButton) getActivity().findViewById(R.id.event_create_radio_private);
 		eventDate = (DatePicker) getActivity().findViewById(R.id.event_create_pick_date);
 		eventTime = (TimePicker) getActivity().findViewById(R.id.event_create_pick_time); 
+		uploadPreview = (ImageView) getActivity().findViewById(R.id.image_view_upload);
 
 		btnImageUpload = (BootstrapButton) getActivity().findViewById(R.id.btn_event_image_upload);
 		btnImageUpload.setOnClickListener(new OnClickListener(){
@@ -157,7 +167,7 @@ public class EventCreateFragment extends Fragment{
 
 		});
 
-		btnCreateEvent = (Button) getActivity().findViewById(R.id.btn_event_submit);
+		btnCreateEvent = (BootstrapButton) getActivity().findViewById(R.id.btn_event_submit);
 		btnCreateEvent.setOnClickListener(new OnClickListener(){
 
 			@Override
@@ -201,7 +211,7 @@ public class EventCreateFragment extends Fragment{
 					.setBodyParameter("event_date", date)
 					.setBodyParameter("event_time", time)
 					.setBodyParameter("visibility", visibility)
-					.setBodyParameter("image_name", "bob.png")
+					.setBodyParameter("image_name", imageName)
 					.setBodyParameter("payment_email", "stevenberger101@gmail.com")
 					.setBodyParameter("end", "false")
 					.asString()
@@ -240,26 +250,46 @@ public class EventCreateFragment extends Fragment{
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == getActivity().RESULT_OK) {
 			if (requestCode == SELECT_PICTURE) {
+				btnImageUpload.setEnabled(false);
 				Uri selectedImageUri = data.getData();
 				selectedImagePath = getRealPathFromURI(selectedImageUri);
 				Log.d("TAG", "FILE: " + selectedImagePath);
 				final File fileToUpload = new File(selectedImagePath);
-				Ion.with(getActivity())
-				.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
-				.setTimeout(60 * 60 * 1000)
-				.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
-				.asString()
-				.setCallback(new FutureCallback<String>() {
-					@Override
-					public void onCompleted(Exception e, String result) {
-						// When the loop is finished, updates the notification
-						if (e != null) {
-							Log.d("TAG", "Error: " + e.getMessage());
-							return;
+
+				if(fileToUpload.exists()){
+					Bitmap b = BitmapFactory.decodeFile(fileToUpload.getAbsolutePath());
+					uploadPreview.setImageBitmap(b);
+
+					Ion.with(getActivity())
+					.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
+					.setTimeout(60 * 60 * 1000)
+					.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
+					.asString()
+					.setCallback(new FutureCallback<String>() {
+						@Override
+						public void onCompleted(Exception e, String result) {
+							// When the loop is finished, updates the notification
+							if (e != null) {
+								Log.d("TAG", "Error: " + e.getMessage());
+								return;
+							}
+				            JSONTokener tokener = new JSONTokener(result);
+
+				            try{
+				                JSONObject root = new JSONObject(tokener);
+				                if(root.has("error")){
+				                    Log.d("ERROR", "Error: " + Messages.safeJSON(root, "error"));
+				                }
+				                if(root.has("name")){
+				                	imageName = Messages.safeJSON(root, "name");
+				                }
+				                btnImageUpload.setEnabled(true);
+				            }catch (JSONException w){
+				                w.printStackTrace();
+				            }
 						}
-						Log.d("IMAGE", "JSON: " + result);
-					}
-				});
+					});
+				}
 			}
 		}
 	}
@@ -281,25 +311,25 @@ public class EventCreateFragment extends Fragment{
 
 		return dateString;
 	}
-	
-    private String getTimeFromTimePicker(TimePicker timePicker){
-        int hour = timePicker.getCurrentHour();
-        int minutes = timePicker.getCurrentMinute();
-        boolean isPM = (hour / 12) > 0;
-        hour %= 12;
-        String strHour = String.format("%02d", hour);
-        String strMinutes = String.format("%02d", minutes);
 
-        String msg = strHour + ":" + strMinutes;
+	private String getTimeFromTimePicker(TimePicker timePicker){
+		int hour = timePicker.getCurrentHour();
+		int minutes = timePicker.getCurrentMinute();
+		boolean isPM = (hour / 12) > 0;
+		hour %= 12;
+		String strHour = String.format("%02d", hour);
+		String strMinutes = String.format("%02d", minutes);
 
-        if(isPM){
-            msg += " PM";
-        }else{
-            msg += " AM";
-        }
+		String msg = strHour + ":" + strMinutes;
 
-        return msg;
-    }
+		if(isPM){
+			msg += " PM";
+		}else{
+			msg += " AM";
+		}
+
+		return msg;
+	}
 
 }
 
