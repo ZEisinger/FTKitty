@@ -190,6 +190,9 @@ public class MainActivity extends Activity
             case 3:
             	mTitle = getString(R.string.title_history);
             	break;
+            case NavigationDrawerFragment.SETTINGS_ITEM:
+            	mTitle = getString(R.string.settings);
+            	break;
         }
     }
 
