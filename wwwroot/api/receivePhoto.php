@@ -9,6 +9,10 @@ $name = null;
 $mime_type = null;
 $invalid_type = false;
 
+if (!file_exists($target_dir)) {
+    mkdir($target_dir, 0777, true);
+}
+
 // Allow certain file formats (JPG, JPEG, PNG, and GIF)
 $array_types = array("jpg","png","jpeg","gif");
 foreach ($array_types as $type) {
