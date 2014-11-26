@@ -173,34 +173,35 @@ public class EventCreateFragment extends Fragment{
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				int checkedID = visibilityGroup.getCheckedRadioButtonId();
+				final int checkedID = visibilityGroup.getCheckedRadioButtonId();
 				String visibility = "private";
 				String date = getDateFromDatePicker(eventDate);
 				String time = getTimeFromTimePicker(eventTime);
-				boolean flag = false;
+				boolean flagName = false;
+				boolean flagLoc = false;
 
 
 				if(txtEventName.getText().toString().isEmpty()){
 					txtEventName.setError(getString(R.string.error_empty));
 					txtEventName.setDanger();
-					flag = false;
+					flagName = false;
 				}else{
-					flag = true;
+					flagName = true;
 				}
 
 				if(txtEventLoc.getText().toString().isEmpty()){
 					txtEventLoc.setError(getString(R.string.error_empty));
 					txtEventLoc.setDanger();
-					flag = false;
+					flagLoc = false;
 				}else{
-					flag = true;
+					flagLoc = true;
 				}
 
 				if(checkedID == radioPublic.getId()){
 					visibility = "public";
 				}
-				Log.d("FLAG","Flag: " + flag);
-				if(flag){
+				
+				if(flagLoc && flagName){
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
 					.setBodyParameter("username", "steven")
@@ -222,7 +223,22 @@ public class EventCreateFragment extends Fragment{
 							// TODO Auto-generated method stub
 							if (e != null) {
 								Log.d("TAG", "Error: " + e.getMessage());
+								if(checkedID == radioPublic.getId()){
+					        		getFragmentManager().beginTransaction()
+									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+								}else{
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+								}
 								return;
+							}else{
+								if(checkedID == radioPublic.getId()){
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+								}else{
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+								}
 							}
 							Log.d("CREATE", "JSON: " + result);
 						}

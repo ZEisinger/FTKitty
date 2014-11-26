@@ -4,6 +4,10 @@ import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.List;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
@@ -21,6 +25,8 @@ import umd.cmsc.feedthekitty.R;
 import main.VenmoWebViewActivity;
 import Events.EventAdapter;
 import Events.TwitterAdapter;
+import Utils.Utils;
+import Venmo.Messages;
 import Venmo.VenmoLibrary;
 import android.app.Fragment;
 import android.content.Intent;
@@ -35,6 +41,7 @@ import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -44,8 +51,12 @@ public class EventViewFragment extends Fragment{
 
 	private BootstrapButton btnPay;
 	private BootstrapButton btnShare;
-	private TextView txtEventName;
+	//private TextView txtEventName;
 	private TextView txtEventDesc;
+	private TextView txtEventDate;
+	private TextView txtEventTime;
+	private TextView txtEventLoc;
+	private ImageView eventIcon;
 	private ListView tweetView;
 	private TwitterAdapter tweetAdapter;
 	private String accessToken;
@@ -66,10 +77,15 @@ public class EventViewFragment extends Fragment{
 		tweetAdapter = new TwitterAdapter(getActivity().getApplicationContext(), R.layout.twitter_item);
 		tweetView.setAdapter(tweetAdapter);
 
+		//txtEventName = (TextView) getActivity().findViewById(R.id.event_name);
 		txtEventDesc = (TextView) getActivity().findViewById(R.id.event_detail_description);
+		txtEventDate = (TextView) getActivity().findViewById(R.id.event_detail_date);
+		txtEventTime = (TextView) getActivity().findViewById(R.id.event_detail_time);
+		txtEventLoc = (TextView) getActivity().findViewById(R.id.event_detail_location);
+		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
 		txtEventDesc.setText(eventDesc);
 
-		getTweets(eventHashTag);
+		getEvent("steven", "Steven's Birthday");
 		
 		handler = new Handler();
 
@@ -154,7 +170,7 @@ public class EventViewFragment extends Fragment{
 		// The last parameter is false because the returned view does not need to be attached to the container ViewGroup
 		return inflater.inflate(R.layout.event_fragment_view_event, container, false);
 	}
-
+	
 	public void getTweets(final String eventHashTag){
 
 		if(!eventHashTag.isEmpty()){
@@ -205,6 +221,96 @@ public class EventViewFragment extends Fragment{
 			twitterThread.start();
 		}
 
+	}
+	
+	private void getEvent(String username, String eventName){
+		if(!username.isEmpty() && !eventName.isEmpty()){
+			Ion.with(getActivity())
+				.load("http://cmsc436.striveforthehighest.com/api/findEvent.php")
+				.setBodyParameter("username", username)
+				.setBodyParameter("event_name", eventName)
+				.asString()
+				.setCallback(new FutureCallback<String>() {
+
+					@Override
+					public void onCompleted(Exception e, String result) {
+						// TODO Auto-generated method stub
+						Log.d("EVENT", "Event: " + result);
+						JSONTokener tokener = new JSONTokener(result);
+						
+			            try{
+			                JSONObject root = new JSONObject(tokener);
+			                JSONObject id;
+			                String temp;
+			                if(root.has("errors")){
+			                	Log.d("HEY", "HEY");
+			                	temp = Messages.safeJSON(root, "errors");
+			                    if(temp != null && !temp.isEmpty() && !temp.equals("null")){
+				                    Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
+			                    }
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("username")){
+			                	id = root.getJSONObject("id");
+			                	// Need place in UI
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("description")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "description");
+			                	if(temp != null && !temp.isEmpty()){
+			                		txtEventDesc.setText(temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("location")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "location");
+			                	if(temp != null && !temp.isEmpty()){
+			                		txtEventLoc.setText(temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("hashtag")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "hashtag");
+			                	if(temp != null && !temp.isEmpty() && !temp.equals("#")){
+			                		getTweets(temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("event_date")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "event_date");
+			                	if(temp != null && !temp.isEmpty()){
+			                		txtEventDate.setText(temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("event_time")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "event_time");
+			                	if(temp != null && !temp.isEmpty()){
+			                		txtEventTime.setText(temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("event_time")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "event_time");
+			                	if(temp != null && !temp.isEmpty()){
+			                		txtEventTime.setText(temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("image_name")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "image_name");
+			                	if(temp != null && !temp.isEmpty()){
+			                		Utils.loadImage(eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + temp);
+			                	}
+			                }
+			            }catch (JSONException w){
+			                w.printStackTrace();
+			            }
+					}
+					
+				});
+				
+		}
+		
 	}
 
 }
