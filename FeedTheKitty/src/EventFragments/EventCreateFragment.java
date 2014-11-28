@@ -1,8 +1,13 @@
 package EventFragments;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import main.MainActivity;
+import main.VenmoWebViewActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -15,7 +20,10 @@ import com.koushikdutta.ion.Ion;
 
 import umd.cmsc.feedthekitty.R;
 import Events.EventItem;
+import Utils.CoreCallback;
+import Utils.DialogFactory;
 import Venmo.Messages;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
@@ -47,6 +55,7 @@ public class EventCreateFragment extends Fragment{
 	private BootstrapEditText txtEventLoc;
 	private BootstrapEditText txtHashTag;
 	private BootstrapButton btnImageUpload;
+	private TextView txtVenmoID;
 	private DatePicker eventDate;
 	private TimePicker eventTime;
 	private ImageView uploadPreview;
@@ -55,6 +64,7 @@ public class EventCreateFragment extends Fragment{
 	private String selectedImagePath;
 	private String imageName;
 	private String paymentEmail;
+	private String paymentUser;
 
 	private static final int SELECT_PICTURE = 1;
 
@@ -66,10 +76,13 @@ public class EventCreateFragment extends Fragment{
 
 		getActivity().setTitle("Create Event");
 
+		getVenmoUser();
+
 		txtEventName = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_name);
 		txtEventDesc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_desc);
 		txtEventLoc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_loc);
 		txtHashTag = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_hashtag);
+		txtVenmoID = (TextView) getActivity().findViewById(R.id.event_venmo_id);
 		visibilityGroup = (RadioGroup) getActivity().findViewById(R.id.event_create_radio);
 		radioPublic = (RadioButton) getActivity().findViewById(R.id.event_create_radio_public);
 		radioPrivate = (RadioButton) getActivity().findViewById(R.id.event_create_radio_private);
@@ -200,7 +213,7 @@ public class EventCreateFragment extends Fragment{
 				if(checkedID == radioPublic.getId()){
 					visibility = "public";
 				}
-				
+
 				if(flagLoc && flagName){
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
@@ -213,7 +226,7 @@ public class EventCreateFragment extends Fragment{
 					.setBodyParameter("event_time", time)
 					.setBodyParameter("visibility", visibility)
 					.setBodyParameter("image_name", imageName)
-					.setBodyParameter("payment_email", "stevenberger101@gmail.com")
+					.setBodyParameter("payment_email", paymentUser)
 					.setBodyParameter("end", "false")
 					.asString()
 					.setCallback(new FutureCallback<String>(){
@@ -224,7 +237,7 @@ public class EventCreateFragment extends Fragment{
 							if (e != null) {
 								Log.d("TAG", "Error: " + e.getMessage());
 								if(checkedID == radioPublic.getId()){
-					        		getFragmentManager().beginTransaction()
+									getFragmentManager().beginTransaction()
 									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
 								}else{
 									getFragmentManager().beginTransaction()
@@ -235,9 +248,23 @@ public class EventCreateFragment extends Fragment{
 								if(checkedID == radioPublic.getId()){
 									getFragmentManager().beginTransaction()
 									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+									DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
+										@Override
+										public void run() {
+
+										}
+									});
+									dialogFragment.show(getFragmentManager(), "CreatedDialog");
 								}else{
 									getFragmentManager().beginTransaction()
 									.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+									DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
+										@Override
+										public void run() {
+
+										}
+									});
+									dialogFragment.show(getFragmentManager(), "CreatedDialog");
 								}
 							}
 							Log.d("CREATE", "JSON: " + result);
@@ -263,50 +290,76 @@ public class EventCreateFragment extends Fragment{
 		return inflater.inflate(R.layout.event_fragment_create, container, false);
 	}
 
+	private void getVenmoUser(){
+		Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
+		String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
+		Log.d("MainActivity", venmo_uri);
+		venmoIntent.putExtra("url", venmo_uri);
+		venmoIntent.putExtra("email", "");
+		venmoIntent.putExtra("amount", "");
+		venmoIntent.putExtra("verify_only", "true");
+		try {
+			venmoIntent.putExtra("note", URLEncoder.encode("Test", "US-ASCII"));
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		venmoIntent.putExtra("visibility", "private");
+		startActivityForResult(venmoIntent, 1);
+
+	}
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == getActivity().RESULT_OK) {
 			if (requestCode == SELECT_PICTURE) {
-				btnImageUpload.setEnabled(false);
-				Uri selectedImageUri = data.getData();
-				selectedImagePath = getRealPathFromURI(selectedImageUri);
-				Log.d("TAG", "FILE: " + selectedImagePath);
-				final File fileToUpload = new File(selectedImagePath);
 
-				if(fileToUpload.exists()){
-					Bitmap b = BitmapFactory.decodeFile(fileToUpload.getAbsolutePath());
-					uploadPreview.setImageBitmap(b);
+				if(data.getExtras() != null && data.getExtras().getString("venmo_id") != null){
+					Log.d("TEMP", "VENMO"+data.getExtras().getString("venmo_id"));
+					paymentUser = data.getExtras().getString("venmo_id");
+					txtVenmoID.setText("Venmo ID: " + paymentUser);
+				}else{
+					btnImageUpload.setEnabled(false);
+					Uri selectedImageUri = data.getData();
+					selectedImagePath = getRealPathFromURI(selectedImageUri);
+					Log.d("TAG", "FILE: " + selectedImagePath);
+					final File fileToUpload = new File(selectedImagePath);
 
-					Ion.with(getActivity())
-					.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
-					.setTimeout(60 * 60 * 1000)
-					.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
-					.asString()
-					.setCallback(new FutureCallback<String>() {
-						@Override
-						public void onCompleted(Exception e, String result) {
-							// When the loop is finished, updates the notification
-							if (e != null) {
-								Log.d("TAG", "Error: " + e.getMessage());
-								return;
+					if(fileToUpload.exists()){
+						Bitmap b = BitmapFactory.decodeFile(fileToUpload.getAbsolutePath());
+						uploadPreview.setImageBitmap(b);
+
+						Ion.with(getActivity())
+						.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
+						.setTimeout(60 * 60 * 1000)
+						.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
+						.asString()
+						.setCallback(new FutureCallback<String>() {
+							@Override
+							public void onCompleted(Exception e, String result) {
+								// When the loop is finished, updates the notification
+								if (e != null) {
+									Log.d("TAG", "Error: " + e.getMessage());
+									return;
+								}
+								JSONTokener tokener = new JSONTokener(result);
+
+								try{
+									JSONObject root = new JSONObject(tokener);
+									if(root.has("error")){
+										Log.d("ERROR", "Error: " + Messages.safeJSON(root, "error"));
+									}
+									if(root.has("name")){
+										imageName = Messages.safeJSON(root, "name");
+									}
+									btnImageUpload.setEnabled(true);
+								}catch (JSONException w){
+									w.printStackTrace();
+								}
 							}
-				            JSONTokener tokener = new JSONTokener(result);
-
-				            try{
-				                JSONObject root = new JSONObject(tokener);
-				                if(root.has("error")){
-				                    Log.d("ERROR", "Error: " + Messages.safeJSON(root, "error"));
-				                }
-				                if(root.has("name")){
-				                	imageName = Messages.safeJSON(root, "name");
-				                }
-				                btnImageUpload.setEnabled(true);
-				            }catch (JSONException w){
-				                w.printStackTrace();
-				            }
-						}
-					});
+						});
+					}
 				}
 			}
+
 		}
 	}
 

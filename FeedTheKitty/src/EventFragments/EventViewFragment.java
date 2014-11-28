@@ -60,6 +60,7 @@ public class EventViewFragment extends Fragment{
 	private ListView tweetView;
 	private TwitterAdapter tweetAdapter;
 	private String accessToken;
+	private String paymentID;
 	private Handler handler;
 
 	// Set up some information about the mQuoteView TextView 
@@ -85,7 +86,7 @@ public class EventViewFragment extends Fragment{
 		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
 		txtEventDesc.setText(eventDesc);
 
-		getEvent("steven", "Steven's Birthday");
+		getEvent("steven", "Andrew's birthday");
 		
 		handler = new Handler();
 
@@ -133,7 +134,7 @@ public class EventViewFragment extends Fragment{
 
 				try {
 					Intent venmoIntent = VenmoLibrary.openVenmoPayment("2097", "Feed the Kitty",
-							"stevenberger101@gmail.com",
+							paymentID,
 							"0.01",
 							"Test", "pay");
 					startActivityForResult(venmoIntent, 1); //1 is the requestCode we are using for Venmo. Feel free to change this to another number.
@@ -145,8 +146,9 @@ public class EventViewFragment extends Fragment{
 					String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
 					Log.d("MainActivity", venmo_uri);
 					venmoIntent.putExtra("url", venmo_uri);
-					venmoIntent.putExtra("email", "stevenberger101@gmail.com");
+					venmoIntent.putExtra("user_id", paymentID);
 					venmoIntent.putExtra("amount", "0.01");
+					venmoIntent.putExtra("verify_only", "false");
 					try {
 						venmoIntent.putExtra("note", URLEncoder.encode("Test", "US-ASCII"));
 					} catch (UnsupportedEncodingException e1) {
@@ -300,6 +302,13 @@ public class EventViewFragment extends Fragment{
 			                	temp = Messages.safeJSON(id, "image_name");
 			                	if(temp != null && !temp.isEmpty()){
 			                		Utils.loadImage(eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + temp);
+			                	}
+			                }
+			                if(root.has("id") && root.getJSONObject("id").has("payment_email")){
+			                	id = root.getJSONObject("id");
+			                	temp = Messages.safeJSON(id, "payment_email");
+			                	if(temp != null && !temp.isEmpty()){
+			                		paymentID = temp;
 			                	}
 			                }
 			            }catch (JSONException w){

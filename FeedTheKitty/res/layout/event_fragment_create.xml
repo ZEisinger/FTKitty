@@ -57,10 +57,17 @@
             bootstrap:be_state="default" />
 
         <TextView
-            android:id="@+id/event_create_date"
+            android:id="@+id/event_venmo_id"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_below="@id/event_create_edit_hashtag"
+            android:text="@string/event_create_date" />        
+        
+        <TextView
+            android:id="@+id/event_create_date"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_venmo_id"
             android:text="@string/event_create_date" />
 
         <DatePicker

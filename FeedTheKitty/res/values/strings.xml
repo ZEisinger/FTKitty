@@ -44,5 +44,7 @@
     <string name="error_empty">This field cannot be empty</string>
     <string name="btn_image_upload">Upload Image</string>
     <string name="title_activity_venmo_web_view">Venmo</string>
+    <string name="msg_created">Event created!</string>
+    <string name="venmo_verified">Venmo account verified!</string>
 
 </resources>
