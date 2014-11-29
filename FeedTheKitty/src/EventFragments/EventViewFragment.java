@@ -9,6 +9,7 @@ import org.json.JSONObject;
 import org.json.JSONTokener;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
+import com.beardedhen.androidbootstrap.BootstrapEditText;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
@@ -25,6 +26,8 @@ import umd.cmsc.feedthekitty.R;
 import main.VenmoWebViewActivity;
 import Events.EventAdapter;
 import Events.TwitterAdapter;
+import Utils.CoreCallback;
+import Utils.DialogFactory;
 import Utils.Utils;
 import Venmo.Messages;
 import Venmo.VenmoLibrary;
@@ -73,7 +76,7 @@ public class EventViewFragment extends Fragment{
 		final String eventHashTag = getArguments().getString("event_hash_tag");
 
 		getActivity().getActionBar().setTitle(eventName);
-		
+
 		tweetView = (ListView) getActivity().findViewById(R.id.twitter_list_view);
 		tweetAdapter = new TwitterAdapter(getActivity().getApplicationContext(), R.layout.twitter_item);
 		tweetView.setAdapter(tweetAdapter);
@@ -87,7 +90,7 @@ public class EventViewFragment extends Fragment{
 		txtEventDesc.setText(eventDesc);
 
 		getEvent("steven", "Andrew's birthday");
-		
+
 		handler = new Handler();
 
 		btnShare = (BootstrapButton) getActivity().findViewById(R.id.btn_event_view_share);
@@ -132,31 +135,45 @@ public class EventViewFragment extends Fragment{
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
 
-				try {
-					Intent venmoIntent = VenmoLibrary.openVenmoPayment("2097", "Feed the Kitty",
-							paymentID,
-							"0.01",
-							"Test", "pay");
-					startActivityForResult(venmoIntent, 1); //1 is the requestCode we are using for Venmo. Feel free to change this to another number.
-				}
-				catch (android.content.ActivityNotFoundException e) //Venmo native app not install on device, so let's instead open a mobile web version of Venmo in a WebView
-				{
+				LayoutInflater li = LayoutInflater.from(getActivity());
+				View promptsView = li.inflate(R.layout.event_payment_dialog, null);
 
-					Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
-					String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
-					Log.d("MainActivity", venmo_uri);
-					venmoIntent.putExtra("url", venmo_uri);
-					venmoIntent.putExtra("user_id", paymentID);
-					venmoIntent.putExtra("amount", "0.01");
-					venmoIntent.putExtra("verify_only", "false");
-					try {
-						venmoIntent.putExtra("note", URLEncoder.encode("Test", "US-ASCII"));
-					} catch (UnsupportedEncodingException e1) {
-						e1.printStackTrace();
+				final BootstrapEditText paymentAmount = (BootstrapEditText) promptsView.findViewById(R.id.event_payment_amount);
+				final BootstrapEditText paymentNote = (BootstrapEditText) promptsView.findViewById(R.id.event_payment_note);
+
+				DialogFactory.createDialogCustomYesNo(promptsView, getActivity(), new CoreCallback(){
+
+					@Override
+					public void run() {
+						// TODO Auto-generated method stub
+						try {
+							Intent venmoIntent = VenmoLibrary.openVenmoPayment("2097", "Feed the Kitty",
+									paymentID,
+									paymentAmount.getText().toString(),
+									paymentNote.getText().toString(), "pay");
+							startActivityForResult(venmoIntent, 1); //1 is the requestCode we are using for Venmo. Feel free to change this to another number.
+						}
+						catch (android.content.ActivityNotFoundException e) //Venmo native app not install on device, so let's instead open a mobile web version of Venmo in a WebView
+						{
+
+							Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
+							String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
+							Log.d("MainActivity", venmo_uri);
+							venmoIntent.putExtra("url", venmo_uri);
+							venmoIntent.putExtra("user_id", paymentID);
+							venmoIntent.putExtra("amount", paymentAmount.getText().toString());
+							venmoIntent.putExtra("verify_only", "false");
+							try {
+								venmoIntent.putExtra("note", URLEncoder.encode(paymentNote.getText().toString(), "US-ASCII"));
+							} catch (UnsupportedEncodingException e1) {
+								e1.printStackTrace();
+							}
+							venmoIntent.putExtra("visibility", "private");
+							startActivityForResult(venmoIntent, 1);
+						}
 					}
-					venmoIntent.putExtra("visibility", "private");
-					startActivityForResult(venmoIntent, 1);
-				}
+
+				}).show(getFragmentManager(), "VenmoDonate");
 			}
 
 		});
@@ -172,7 +189,7 @@ public class EventViewFragment extends Fragment{
 		// The last parameter is false because the returned view does not need to be attached to the container ViewGroup
 		return inflater.inflate(R.layout.event_fragment_view_event, container, false);
 	}
-	
+
 	public void getTweets(final String eventHashTag){
 
 		if(!eventHashTag.isEmpty()){
@@ -201,17 +218,17 @@ public class EventViewFragment extends Fragment{
 								// TODO Auto-generated method stub
 								int index = 0;
 								for (Status status : result.getTweets()) {
-//									System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
-//									txtEventName.setText(status.getUser().getScreenName());
+									//									System.out.println("@" + status.getUser().getScreenName() + ":" + status.getText());
+									//									txtEventName.setText(status.getUser().getScreenName());
 									if(index == 4){
 										break;
 									}
 									tweetAdapter.add(status);
 									index++;
 								}
-								
+
 							}
-							
+
 						});
 					} catch (TwitterException e) {
 						// TODO Auto-generated catch block
@@ -224,102 +241,102 @@ public class EventViewFragment extends Fragment{
 		}
 
 	}
-	
+
 	private void getEvent(String username, String eventName){
 		if(!username.isEmpty() && !eventName.isEmpty()){
 			Ion.with(getActivity())
-				.load("http://cmsc436.striveforthehighest.com/api/findEvent.php")
-				.setBodyParameter("username", username)
-				.setBodyParameter("event_name", eventName)
-				.asString()
-				.setCallback(new FutureCallback<String>() {
+			.load("http://cmsc436.striveforthehighest.com/api/findEvent.php")
+			.setBodyParameter("username", username)
+			.setBodyParameter("event_name", eventName)
+			.asString()
+			.setCallback(new FutureCallback<String>() {
 
-					@Override
-					public void onCompleted(Exception e, String result) {
-						// TODO Auto-generated method stub
-						Log.d("EVENT", "Event: " + result);
-						JSONTokener tokener = new JSONTokener(result);
-						
-			            try{
-			                JSONObject root = new JSONObject(tokener);
-			                JSONObject id;
-			                String temp;
-			                if(root.has("errors")){
-			                	Log.d("HEY", "HEY");
-			                	temp = Messages.safeJSON(root, "errors");
-			                    if(temp != null && !temp.isEmpty() && !temp.equals("null")){
-				                    Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
-			                    }
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("username")){
-			                	id = root.getJSONObject("id");
-			                	// Need place in UI
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("description")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "description");
-			                	if(temp != null && !temp.isEmpty()){
-			                		txtEventDesc.setText(temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("location")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "location");
-			                	if(temp != null && !temp.isEmpty()){
-			                		txtEventLoc.setText(temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("hashtag")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "hashtag");
-			                	if(temp != null && !temp.isEmpty() && !temp.equals("#")){
-			                		getTweets(temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("event_date")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "event_date");
-			                	if(temp != null && !temp.isEmpty()){
-			                		txtEventDate.setText(temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("event_time")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "event_time");
-			                	if(temp != null && !temp.isEmpty()){
-			                		txtEventTime.setText(temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("event_time")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "event_time");
-			                	if(temp != null && !temp.isEmpty()){
-			                		txtEventTime.setText(temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("image_name")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "image_name");
-			                	if(temp != null && !temp.isEmpty()){
-			                		Utils.loadImage(eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + temp);
-			                	}
-			                }
-			                if(root.has("id") && root.getJSONObject("id").has("payment_email")){
-			                	id = root.getJSONObject("id");
-			                	temp = Messages.safeJSON(id, "payment_email");
-			                	if(temp != null && !temp.isEmpty()){
-			                		paymentID = temp;
-			                	}
-			                }
-			            }catch (JSONException w){
-			                w.printStackTrace();
-			            }
+				@Override
+				public void onCompleted(Exception e, String result) {
+					// TODO Auto-generated method stub
+					Log.d("EVENT", "Event: " + result);
+					JSONTokener tokener = new JSONTokener(result);
+
+					try{
+						JSONObject root = new JSONObject(tokener);
+						JSONObject id;
+						String temp;
+						if(root.has("errors")){
+							Log.d("HEY", "HEY");
+							temp = Messages.safeJSON(root, "errors");
+							if(temp != null && !temp.isEmpty() && !temp.equals("null")){
+								Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("username")){
+							id = root.getJSONObject("id");
+							// Need place in UI
+						}
+						if(root.has("id") && root.getJSONObject("id").has("description")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "description");
+							if(temp != null && !temp.isEmpty()){
+								txtEventDesc.setText(temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("location")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "location");
+							if(temp != null && !temp.isEmpty()){
+								txtEventLoc.setText(temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("hashtag")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "hashtag");
+							if(temp != null && !temp.isEmpty() && !temp.equals("#")){
+								getTweets(temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("event_date")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "event_date");
+							if(temp != null && !temp.isEmpty()){
+								txtEventDate.setText(temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("event_time")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "event_time");
+							if(temp != null && !temp.isEmpty()){
+								txtEventTime.setText(temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("event_time")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "event_time");
+							if(temp != null && !temp.isEmpty()){
+								txtEventTime.setText(temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("image_name")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "image_name");
+							if(temp != null && !temp.isEmpty()){
+								Utils.loadImage(eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + temp);
+							}
+						}
+						if(root.has("id") && root.getJSONObject("id").has("payment_email")){
+							id = root.getJSONObject("id");
+							temp = Messages.safeJSON(id, "payment_email");
+							if(temp != null && !temp.isEmpty()){
+								paymentID = temp;
+							}
+						}
+					}catch (JSONException w){
+						w.printStackTrace();
 					}
-					
-				});
-				
+				}
+
+			});
+
 		}
-		
+
 	}
 
 }

@@ -46,5 +46,6 @@
     <string name="title_activity_venmo_web_view">Venmo</string>
     <string name="msg_created">Event created!</string>
     <string name="venmo_verified">Venmo account verified!</string>
-
+    <string name="event_payment_amount">Amount to Donate (required)</string>
+	<string name="event_payment_note">Note (required)</string>
 </resources>
