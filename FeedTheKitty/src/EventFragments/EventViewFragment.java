@@ -163,11 +163,7 @@ public class EventViewFragment extends Fragment{
 							venmoIntent.putExtra("user_id", paymentID);
 							venmoIntent.putExtra("amount", paymentAmount.getText().toString());
 							venmoIntent.putExtra("verify_only", "false");
-							try {
-								venmoIntent.putExtra("note", URLEncoder.encode(paymentNote.getText().toString(), "US-ASCII"));
-							} catch (UnsupportedEncodingException e1) {
-								e1.printStackTrace();
-							}
+							venmoIntent.putExtra("note", paymentNote.getText().toString());
 							venmoIntent.putExtra("visibility", "private");
 							startActivityForResult(venmoIntent, 1);
 						}

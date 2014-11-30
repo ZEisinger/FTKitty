@@ -22,6 +22,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.View.OnClickListener;
+import android.widget.AbsListView;
+import android.widget.AbsListView.OnScrollListener;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.Button;
@@ -34,6 +36,8 @@ public class EventListFragment extends Fragment{
 
 	private ListView eventList;
 	public static EventAdapter eventAdapter;
+	private int lastFirstVisibleItem = 0;
+	private int preLast;
 	
 	// Set up some information about the mQuoteView TextView 
 	@Override
@@ -71,6 +75,41 @@ public class EventListFragment extends Fragment{
 				.replace(R.id.container, evf).addToBackStack("event_view").commit();			
 			}
 
+		});
+		
+		eventList.setOnScrollListener( new OnScrollListener() {
+
+			@Override
+			public void onScrollStateChanged(AbsListView view, int scrollState) {
+				// TODO Auto-generated method stub
+
+			}
+
+			@Override
+			public void onScroll(AbsListView view, int firstVisibleItem,
+					int visibleItemCount, int totalItemCount) {
+				// TODO Auto-generated method stub			
+				if(view.getId() == eventList.getId()){
+					final int lastItem = firstVisibleItem + visibleItemCount;
+					if(firstVisibleItem > lastFirstVisibleItem){
+						Log.d("EVENT", "SCORLLING DOWN");
+					}else if(firstVisibleItem < lastFirstVisibleItem){
+						Log.d("EVENT", "SCORLLING UP");
+					}else if(lastItem == totalItemCount){
+						if(preLast != lastItem){
+							Log.d("EVENT", "LAST ITEM REACHED");
+							preLast = lastItem;
+							for(int i = 0; i < 10; i++){
+								EventItem eventItem = new EventItem("EVENT2", "This is a description.2", "#feedthekitty");
+								eventAdapter.add(eventItem);
+							}
+						}
+					}
+				}
+				lastFirstVisibleItem = firstVisibleItem;
+
+			}
+			
 		});
 	}
 
