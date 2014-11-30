@@ -19,8 +19,9 @@ if ($sql->connect_errno) {
 }
 
   $sql_state = "SELECT
-                    id,
-                    username,
+                    events.id,
+                    payment_amount,
+                    events.username AS username,
                     event_name,
                     description,
                     location,
@@ -29,31 +30,25 @@ if ($sql->connect_errno) {
                     event_time,
                     vis_public,
                     image_name,
-                    payment_email,
+                    attendence.payment_email,
                     end
                 FROM
+                    attendence
+                LEFT OUTER JOIN
                     events
+                  ON
+                    events.id = attendence.event_id
                 WHERE
-                    ";
+                    attendence.username = ?";
 
-if ( array_key_exists( "id", $_POST ) && strtolower ( $_POST["id"] ) != "" ) {
-  $sql_state = $sql_state . "id = ?";
-  if (!($prep = $sql->prepare($sql_state))) {
-    array_push( $error, "MySQL Error - unable to prepare statement." );
-  }
-  $prep->bind_param("s", $_POST["id"]);
-} else {
-  $sql_state = $sql_state . "username = ?
-                  AND
-                    event_name = ?";
-  if (!($prep = $sql->prepare($sql_state))) {
-    array_push( $error, "MySQL Error - unable to prepare statement." );
-  }
-  $prep->bind_param("ss", $_POST["username"], $_POST["event_name"]);
+if (!($prep = $sql->prepare($sql_state))) {
+  array_push( $error, "MySQL Error - unable to prepare statement." );
 }
+$prep->bind_param("s", $_POST["username"]);
 
 $result = array(
-            'event_id' => null,
+            'id' => null,
+            'payment_amount' => null,
             'username' => null,
             'event_name' => null,
             'description' => null,
@@ -70,7 +65,8 @@ $result = array(
 if ( sizeof($error) == 0)
 {
   $prep->bind_result(
-            $result['event_id'],
+            $result['id'],
+            $result['payment_amount'],
             $result['username'],
             $result['event_name'],
             $result['description'],
@@ -87,14 +83,31 @@ if ( sizeof($error) == 0)
   /* execute the statement */
   $prep->execute();
 
+  $array_results = array();
+  
   /* now we want to fetch the data from the database */
-  $prep->fetch();
+  while ($prep->fetch()) {
+    array_push( $array_results,
+            array(
+              'event_id' => $result['id'],
+              'payment_amount' => $result['payment_amount'],
+              'username' => $result['username'],
+              'event_name' => $result['event_name'],
+              'description' => $result['description'],
+              'location' => $result['location'],
+              'hashtag' => $result['hashtag'],
+              'event_date' => $result['event_date'],
+              'event_time' => $result['event_time'],
+              'vis_public' => $result['vis_public'] ? 'public' : 'private',
+              'image_name' => $result['image_name'],
+              'payment_email' => $result['payment_email'],
+              'end' => $result['end'] ? 'history' : 'active'
+            )
+          );
+  }
 
   /* close the statement */
   $prep->close();
-  
-  $result['vis_public'] = $result['vis_public'] ? 'public' : 'private';
-  $result['end'] = $result['end'] ? 'history' : 'active';
 }
 
 if ( sizeof($error) > 0 ) {
@@ -102,14 +115,14 @@ if ( sizeof($error) > 0 ) {
     $object = array(
         'status' => '400',
         'errors' => $error,
-        'result' => $result
+        'result' => $array_results
       );
     echo json_encode( $object );
   } else {
     $object = array(
         'status' => '500',
         'errors' => 'There was a problem preparing your statement',
-        'id' => $result
+        'result' => $array_results
       );
     echo json_encode( $object );
   }
@@ -117,7 +130,7 @@ if ( sizeof($error) > 0 ) {
   $object = array(
       'status' => '200',
       'errors' => null,
-      'id' => $result
+      'result' => $array_results
 	  );
   echo json_encode( $object );
 }
