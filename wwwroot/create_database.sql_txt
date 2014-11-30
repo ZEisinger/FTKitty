@@ -15,3 +15,14 @@ payment_email VARCHAR(63),
 end BIT
 
 );
+
+CREATE TABLE attendence
+(
+
+id INT PRIMARY KEY AUTO_INCREMENT,
+username VARCHAR(511),
+event_id INT,
+payment_amount NUMERIC(15,2),
+payment_email VARCHAR(63)
+
+);
