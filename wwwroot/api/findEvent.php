@@ -12,6 +12,12 @@ $sql_state = "";
 $invalid_type = false;
 $id = null;
 
+if ( array_key_exists( "username", $_GET ) && array_key_exists( "event_name", $_GET ) )
+{
+  $_POST['username'] = $_GET['username'];
+  $_POST['event_name'] = $_GET['event_name'];
+}
+
 $sql = new mysqli( $db_desti, $db_uname, $db_pword, $db_dbase );
 
 if ($sql->connect_errno) {
@@ -109,7 +115,7 @@ if ( sizeof($error) > 0 ) {
     $object = array(
         'status' => '500',
         'errors' => 'There was a problem preparing your statement',
-        'id' => $result
+        'result' => $result
       );
     echo json_encode( $object );
   }
@@ -117,7 +123,7 @@ if ( sizeof($error) > 0 ) {
   $object = array(
       'status' => '200',
       'errors' => null,
-      'id' => $result
+      'result' => $result
 	  );
   echo json_encode( $object );
 }

@@ -12,45 +12,54 @@ $sql_state = "";
 $invalid_type = false;
 $id = null;
 
-$sql = new mysqli( $db_desti, $db_uname, $db_pword, $db_dbase );
+$page = json_decode(file_get_contents("http://cmsc436.striveforthehighest.com/api/findEvent.php?username=" . $_POST["username"] . "&event_name=" . $_POST["event_name"]), true);
 
-if ($sql->connect_errno) {
-    array_push ( $error, "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error );
-}
+if ($page['result'] === null)
+{
 
-if ( strtolower ( $_POST["visibility"] ) == "public" )
-  $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, end) VALUES (?,?,?,?,?,?,?,1,?,?";
-else
-  $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, end) VALUES (?,?,?,?,?,?,?,0,?,?";
+  $sql = new mysqli( $db_desti, $db_uname, $db_pword, $db_dbase );
 
-if ( strtolower ( $_POST["end"] ) == "true" )
-  $sql_state = $sql_state . ",1)";
-else
-  $sql_state = $sql_state . ",0)";
-  
-// TODO:  check duplicates username + event_name should be unique
+  if ($sql->connect_errno) {
+      array_push ( $error, "Failed to connect to MySQL: (" . $mysqli->connect_errno . ") " . $mysqli->connect_error );
+  }
 
-/* make sure we can prepare the statement */
-if ( $prep = $sql->prepare($sql_state) ) {
-  /* first we want to bind $findname to the first ? in our statement
-  since it is a string, we'll use 's' */
-  $prep->bind_param("sssssssss", $_POST["username"], $_POST["event_name"], $_POST["description"], 
-                    $_POST["location"], $_POST["hashtag"], $_POST["event_date"], 
-                    $_POST["event_time"], $_POST["image_name"], $_POST["payment_email"]);
+  if ( strtolower ( $_POST["visibility"] ) == "public" )
+    $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, end) VALUES (?,?,?,?,?,?,?,1,?,?";
+  else
+    $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, end) VALUES (?,?,?,?,?,?,?,0,?,?";
 
-  /* execute the statement */
-  $prep->execute();
+  if ( strtolower ( $_POST["end"] ) == "true" )
+    $sql_state = $sql_state . ",1)";
+  else
+    $sql_state = $sql_state . ",0)";
+    
+  // TODO:  check duplicates username + event_name should be unique
 
-  /* now we want to fetch the data from the database */
-  $prep->fetch();
-  
-  /* close the statement */
-  $prep->close();
+  /* make sure we can prepare the statement */
+  if ( $prep = $sql->prepare($sql_state) ) {
+    /* first we want to bind $findname to the first ? in our statement
+    since it is a string, we'll use 's' */
+    $prep->bind_param("sssssssss", $_POST["username"], $_POST["event_name"], $_POST["description"], 
+                      $_POST["location"], $_POST["hashtag"], $_POST["event_date"], 
+                      $_POST["event_time"], $_POST["image_name"], $_POST["payment_email"]);
 
-  $id = mysqli_insert_id($sql);
- 
+    /* execute the statement */
+    $prep->execute();
+
+    /* now we want to fetch the data from the database */
+    $prep->fetch();
+    
+    /* close the statement */
+    $prep->close();
+
+    $id = mysqli_insert_id($sql);
+   
+  } else {
+      array_push( $error, "MySQL Error - unable to prepare statement." );
+  }
 } else {
-    array_push( $error, "MySQL Error - unable to prepare statement." );
+  array_push( $error, "event already exists" );
+  $invalid_type = true;
 }
 
 if ( sizeof($error) > 0 ) {
@@ -80,9 +89,5 @@ if ( sizeof($error) > 0 ) {
 
 
 /* close up */
-  
-  
-
-  
   
 ?>
