@@ -10,6 +10,8 @@ import org.json.JSONTokener;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
+import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.FacebookDialog;
 import com.google.gson.JsonObject;
 import com.koushikdutta.async.future.Future;
 import com.koushikdutta.async.future.FutureCallback;
@@ -65,11 +67,23 @@ public class EventViewFragment extends Fragment{
 	private String accessToken;
 	private String paymentID;
 	private Handler handler;
+	private UiLifecycleHelper uiHelper;
 
 	// Set up some information about the mQuoteView TextView 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
 		super.onActivityCreated(savedInstanceState);
+
+		uiHelper = new UiLifecycleHelper(getActivity(), null);
+		uiHelper.onCreate(savedInstanceState);
+
+		//This is used to post to Facebook, works, but my hash is not recognized, so commented out for now.
+//		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
+//		.setLink("")
+//		.setDescription("Message")
+//		.setApplicationName("FeedTheKitty")
+//		.build();
+//		uiHelper.trackPendingDialogCall(shareDialog.present());
 
 		String eventName = getArguments().getString("event_name");
 		String eventDesc = getArguments().getString("event_desc");
@@ -89,7 +103,7 @@ public class EventViewFragment extends Fragment{
 		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
 		txtEventDesc.setText(eventDesc);
 
-		getEvent("steven", "Steven's Event");
+		getEvent("steven", "Thanksgiving");
 
 		handler = new Handler();
 
@@ -333,6 +347,47 @@ public class EventViewFragment extends Fragment{
 
 		}
 
+	}
+
+	@Override
+	public void onActivityResult(int requestCode, int resultCode, Intent data) {
+		super.onActivityResult(requestCode, resultCode, data);
+
+		uiHelper.onActivityResult(requestCode, resultCode, data, new FacebookDialog.Callback() {
+			@Override
+			public void onError(FacebookDialog.PendingCall pendingCall, Exception error, Bundle data) {
+				Log.e("Activity", String.format("Error: %s", error.toString()));
+			}
+
+			@Override
+			public void onComplete(FacebookDialog.PendingCall pendingCall, Bundle data) {
+				Log.i("Activity", "Success!");
+			}
+		});
+	}
+
+	@Override
+	public void onResume() {
+		super.onResume();
+		uiHelper.onResume();
+	}
+
+	@Override
+	public void onSaveInstanceState(Bundle outState) {
+		super.onSaveInstanceState(outState);
+		uiHelper.onSaveInstanceState(outState);
+	}
+
+	@Override
+	public void onPause() {
+		super.onPause();
+		uiHelper.onPause();
+	}
+
+	@Override
+	public void onDestroy() {
+		super.onDestroy();
+		uiHelper.onDestroy();
 	}
 
 }
