@@ -55,12 +55,14 @@ public class EventCreateFragment extends Fragment{
 	private BootstrapEditText txtEventLoc;
 	private BootstrapEditText txtHashTag;
 	private BootstrapButton btnImageUpload;
+	private BootstrapButton btnVenmoVerify;
 	private TextView txtVenmoID;
 	private DatePicker eventDate;
 	private TimePicker eventTime;
 	private ImageView uploadPreview;
 	private RadioGroup visibilityGroup;
 	private RadioButton radioPublic, radioPrivate;
+	private Boolean isVenmoVerified = false;
 	private String selectedImagePath;
 	private String imageName;
 	private String paymentEmail;
@@ -76,8 +78,6 @@ public class EventCreateFragment extends Fragment{
 
 		getActivity().setTitle("Create Event");
 
-		getVenmoUser();
-
 		txtEventName = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_name);
 		txtEventDesc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_desc);
 		txtEventLoc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_loc);
@@ -90,6 +90,17 @@ public class EventCreateFragment extends Fragment{
 		eventTime = (TimePicker) getActivity().findViewById(R.id.event_create_pick_time); 
 		uploadPreview = (ImageView) getActivity().findViewById(R.id.image_view_upload);
 
+		btnVenmoVerify = (BootstrapButton) getActivity().findViewById(R.id.btn_verify_venmo);
+		btnVenmoVerify.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getVenmoUser();
+			}
+			
+		});
+		
 		btnImageUpload = (BootstrapButton) getActivity().findViewById(R.id.btn_event_image_upload);
 		btnImageUpload.setOnClickListener(new OnClickListener(){
 
@@ -214,7 +225,11 @@ public class EventCreateFragment extends Fragment{
 					visibility = "public";
 				}
 
-				if(flagLoc && flagName){
+				if(isVenmoVerified == false){
+					DialogFactory.createDialogOk(getString(R.string.error_venmo_verify)).show(getFragmentManager(), "VenmoVerified");
+				}
+				
+				if(flagLoc && flagName && isVenmoVerified){
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
 					.setBodyParameter("username", "steven")
@@ -315,7 +330,8 @@ public class EventCreateFragment extends Fragment{
 				if(data.getExtras() != null && data.getExtras().getString("venmo_id") != null){
 					Log.d("TEMP", "VENMO"+data.getExtras().getString("venmo_id"));
 					paymentUser = data.getExtras().getString("venmo_id");
-					txtVenmoID.setText("Venmo ID: " + paymentUser);
+					isVenmoVerified = true;
+					txtVenmoID.setText(R.string.venmo_verified);
 				}else{
 					btnImageUpload.setEnabled(false);
 					Uri selectedImageUri = data.getData();

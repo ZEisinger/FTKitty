@@ -89,7 +89,7 @@ public class EventViewFragment extends Fragment{
 		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
 		txtEventDesc.setText(eventDesc);
 
-		getEvent("steven", "Andrew's birthday");
+		getEvent("steven", "Steven's Event");
 
 		handler = new Handler();
 
@@ -264,61 +264,61 @@ public class EventViewFragment extends Fragment{
 								Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("username")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("username")){
+							id = root.getJSONObject("result");
 							// Need place in UI
 						}
-						if(root.has("id") && root.getJSONObject("id").has("description")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("description")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "description");
 							if(temp != null && !temp.isEmpty()){
 								txtEventDesc.setText(temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("location")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("location")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "location");
 							if(temp != null && !temp.isEmpty()){
 								txtEventLoc.setText(temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("hashtag")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("hashtag")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "hashtag");
 							if(temp != null && !temp.isEmpty() && !temp.equals("#")){
 								getTweets(temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("event_date")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("event_date")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "event_date");
 							if(temp != null && !temp.isEmpty()){
 								txtEventDate.setText(temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("event_time")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("event_time")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "event_time");
 							if(temp != null && !temp.isEmpty()){
 								txtEventTime.setText(temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("event_time")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("event_time")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "event_time");
 							if(temp != null && !temp.isEmpty()){
 								txtEventTime.setText(temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("image_name")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("image_name")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "image_name");
 							if(temp != null && !temp.isEmpty()){
 								Utils.loadImage(eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + temp);
 							}
 						}
-						if(root.has("id") && root.getJSONObject("id").has("payment_email")){
-							id = root.getJSONObject("id");
+						if(root.has("result") && root.getJSONObject("result").has("payment_email")){
+							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "payment_email");
 							if(temp != null && !temp.isEmpty()){
 								paymentID = temp;
