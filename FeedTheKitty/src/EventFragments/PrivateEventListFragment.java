@@ -33,7 +33,7 @@ public class PrivateEventListFragment extends Fragment{
 		privateEventAdapter = new EventAdapter(getActivity().getApplicationContext(), R.layout.event_item);
 
 		for(int i = 0; i < 3; i++){
-			EventItem eventItem = new EventItem("PRIVATE EVENT" + i, "This is a description.", "");
+			EventItem eventItem = new EventItem("PRIVATE EVENT" + i, "", "This is a description.", "", "", "", "");
 			privateEventAdapter.add(eventItem);
 		}
 

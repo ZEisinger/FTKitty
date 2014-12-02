@@ -87,6 +87,7 @@ public class EventViewFragment extends Fragment{
 
 		String eventName = getArguments().getString("event_name");
 		String eventDesc = getArguments().getString("event_desc");
+		String userName = getArguments().getString("username");
 		final String eventHashTag = getArguments().getString("event_hash_tag");
 
 		getActivity().getActionBar().setTitle(eventName);
@@ -103,7 +104,7 @@ public class EventViewFragment extends Fragment{
 		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
 		txtEventDesc.setText(eventDesc);
 
-		getEvent("steven", "Thanksgiving");
+		getEvent(userName, eventName);
 
 		handler = new Handler();
 

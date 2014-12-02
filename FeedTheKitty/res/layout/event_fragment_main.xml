@@ -9,10 +9,20 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="main.MainActivity$EventListFragment" >
 
+    <ProgressBar 
+        android:minHeight="20dp"
+        android:maxHeight="20dp"
+        android:id="@+id/events_progress"
+        style="?android:attr/progressBarStyleHorizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center" />
+    
     <ListView
         android:id="@+id/event_list_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_below="@id/events_progress"
         android:cacheColorHint="@android:color/transparent"
         android:clickable="true"
         android:divider="@null"
