@@ -9,6 +9,7 @@ import java.util.Date;
 import main.MainActivity;
 import main.VenmoWebViewActivity;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.JSONTokener;
@@ -260,27 +261,62 @@ public class EventCreateFragment extends Fragment{
 								}
 								return;
 							}else{
-								if(checkedID == radioPublic.getId()){
-									getFragmentManager().beginTransaction()
-									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
-									DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
-										@Override
-										public void run() {
+								JSONTokener tokener = new JSONTokener(result);
+								
+								try {
+									JSONObject root = new JSONObject(tokener);
+									
+									if(root.has("errors")){
+										Log.d("HEY", "HEY");
+										String temp = Messages.safeJSON(root, "errors");
+										if(temp != null && !temp.isEmpty() && !temp.equals("null")){
+											Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
+											JSONArray arr = root.getJSONArray("errors");
+											String msg = "";
+											for(int i = 0; i < arr.length(); i++){
+												msg+=arr.getString(i)+"\n";
+											}
+											DialogFragment dialogFragment = DialogFactory.createDialogOk(msg, new CoreCallback(){
 
+												@Override
+												public void run() {
+													// TODO Auto-generated method stub
+													getFragmentManager().beginTransaction().replace(R.id.container, new EventCreateFragment())
+														.addToBackStack("event_create").commit();
+												}
+												
+											});
+											dialogFragment.show(getFragmentManager(), "CreateErrorMessage");
 										}
-									});
-									dialogFragment.show(getFragmentManager(), "CreatedDialog");
-								}else{
-									getFragmentManager().beginTransaction()
-									.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
-									DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
-										@Override
-										public void run() {
+									}else{
+										if(checkedID == radioPublic.getId()){
+											getFragmentManager().beginTransaction()
+											.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+											DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
+												@Override
+												public void run() {
 
+												}
+											});
+											dialogFragment.show(getFragmentManager(), "CreatedDialog");
+										}else{
+											getFragmentManager().beginTransaction()
+											.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+											DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
+												@Override
+												public void run() {
+
+												}
+											});
+											dialogFragment.show(getFragmentManager(), "CreatedDialog");
 										}
-									});
-									dialogFragment.show(getFragmentManager(), "CreatedDialog");
+									}
+									
+								} catch (JSONException e1) {
+									// TODO Auto-generated catch block
+									e1.printStackTrace();
 								}
+								
 							}
 							Log.d("CREATE", "JSON: " + result);
 						}
