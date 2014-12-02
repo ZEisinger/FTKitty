@@ -40,22 +40,25 @@ if ($sql->connect_errno) {
                 FROM
                     events
                 WHERE
+                    END = 0
+                  AND
                     ";
 
-if ( array_key_exists( "id", $_POST ) && strtolower ( $_POST["id"] ) != "" ) {
-  $sql_state = $sql_state . "id = ?";
+if ( strtolower ( $_POST["visibility"] ) == "public" ) {
+  $sql_state = $sql_state . "vis_public = 1";
   if (!($prep = $sql->prepare($sql_state))) {
     array_push( $error, "MySQL Error - unable to prepare statement." );
   }
-  $prep->bind_param("s", $_POST["id"]);
 } else {
-  $sql_state = $sql_state . "username = ?
+  $ids = explode(",", $_POST["friend_list"]);
+  $in = join(',', array_fill(0, count($ids), '?'));
+  $sql_state = $sql_state . "vis_public = 0
                   AND
-                    event_name = ?";
+                    username IN ($in)";
   if (!($prep = $sql->prepare($sql_state))) {
     array_push( $error, "MySQL Error - unable to prepare statement." );
   }
-  $prep->bind_param("ss", $_POST["username"], $_POST["event_name"]);
+  $prep->bind_param(str_repeat('s', count($ids)), ...$ids);
 }
 
 $result = array(
@@ -92,32 +95,50 @@ if ( sizeof($error) == 0)
 
   /* execute the statement */
   $prep->execute();
+}
+
+$array_results = array();
+
+if ( sizeof($error) == 0)
+{
 
   /* now we want to fetch the data from the database */
-  $prep->fetch();
-
-  /* close the statement */
-  $prep->close();
-  
-  $result['vis_public'] = $result['vis_public'] ? 'public' : 'private';
-  $result['end'] = $result['end'] ? 'history' : 'active';
-  if ( $result['event_id'] === null )
-    $result = null;
+  while ($prep->fetch()) {
+    array_push( $array_results,
+            array(
+              'event_id' => $result['event_id'],
+              'username' => $result['username'],
+              'event_name' => $result['event_name'],
+              'description' => $result['description'],
+              'location' => $result['location'],
+              'hashtag' => $result['hashtag'],
+              'event_date' => $result['event_date'],
+              'event_time' => $result['event_time'],
+              'vis_public' => $result['vis_public'] ? 'public' : 'private',
+              'image_name' => $result['image_name'],
+              'payment_email' => $result['payment_email'],
+              'end' => $result['end'] ? 'history' : 'active'
+            )
+          );
+  }
 }
+
+/* close the statement */
+$prep->close();
 
 if ( sizeof($error) > 0 ) {
   if ( $invalid_type ) {
     $object = array(
         'status' => '400',
         'errors' => $error,
-        'result' => $result
+        'result' => $array_results
       );
     echo json_encode( $object );
   } else {
     $object = array(
         'status' => '500',
         'errors' => 'There was a problem preparing your statement',
-        'result' => $result
+        'result' => $array_results
       );
     echo json_encode( $object );
   }
@@ -125,7 +146,7 @@ if ( sizeof($error) > 0 ) {
   $object = array(
       'status' => '200',
       'errors' => null,
-      'result' => $result
+      'result' => $array_results
 	  );
   echo json_encode( $object );
 }
