@@ -1,10 +1,13 @@
 package main;
 
+import java.util.Arrays;
+
 import umd.cmsc.feedthekitty.R;
 
 import com.facebook.Session;
 import com.facebook.SessionState;
 import com.facebook.UiLifecycleHelper;
+import com.facebook.widget.LoginButton;
 
 import android.app.Activity;
 import android.app.Fragment;
@@ -103,6 +106,9 @@ public class LoginActivity extends Activity {
 				Bundle savedInstanceState) {
 			View rootView = inflater.inflate(R.layout.login_fragment,
 					container, false);
+			LoginButton lb = (LoginButton) rootView.findViewById(R.id.login_authButton);
+			lb.setReadPermissions(Arrays.asList("user_friends"));
+			
 			return rootView;
 		}
 		

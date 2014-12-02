@@ -58,6 +58,8 @@ public class MainActivity extends Activity
     private DrawerLayout mDrawerLayout;
     private ActionBarDrawerToggle mDrawerToggle;
 	private UiLifecycleHelper uiHelper;
+	
+	private FriendsList mFriendsList;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -117,6 +119,7 @@ public class MainActivity extends Activity
 	           (session.isOpened() || session.isClosed()) ) {
 	        onSessionStateChange(session, session.getState(), null);
 	    }
+	    mFriendsList = new FriendsList(MainActivity.this);
 	    uiHelper.onResume();
 	}
 
