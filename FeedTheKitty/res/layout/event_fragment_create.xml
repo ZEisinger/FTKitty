@@ -56,11 +56,34 @@
             android:hint="@string/event_create_hashtag"
             bootstrap:be_state="default" />
 
+        <com.beardedhen.androidbootstrap.BootstrapButton
+            android:id="@+id/btn_verify_venmo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/event_create_edit_hashtag"
+            android:layout_marginTop="20dp"
+            android:paddingEnd="50dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="50dp"
+            android:text="@string/btn_verify_venmo"
+            bootstrap:bb_icon_left="fa-money"
+            bootstrap:bb_type="success" >
+        </com.beardedhen.androidbootstrap.BootstrapButton>
+
+        <TextView
+            android:id="@+id/event_venmo_id"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignTop="@id/btn_verify_venmo"
+            android:layout_below="@id/event_create_edit_hashtag"
+            android:layout_toRightOf="@id/btn_verify_venmo" />
+
         <TextView
             android:id="@+id/event_create_date"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_below="@id/event_create_edit_hashtag"
+            android:layout_below="@id/btn_verify_venmo"
+            android:paddingTop="10dp"
             android:text="@string/event_create_date" />
 
         <DatePicker
@@ -115,20 +138,32 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/event_create_radio"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:layout_marginTop="20dp"
+            android:paddingEnd="50dp"
+            android:paddingLeft="10dp"
+            android:paddingRight="50dp"
             android:text="@string/btn_image_upload"
             bootstrap:bb_icon_left="fa-camera"
             bootstrap:bb_type="success" >
         </com.beardedhen.androidbootstrap.BootstrapButton>
 
-        <Button
+        <ImageView
+            android:id="@+id/image_view_upload"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_below="@id/event_create_radio"
+            android:layout_toRightOf="@id/btn_event_image_upload" />
+
+        <com.beardedhen.androidbootstrap.BootstrapButton
             android:id="@+id/btn_event_submit"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_below="@id/btn_event_image_upload"
-            android:text="@string/btn_event_create" />
+            android:layout_below="@id/image_view_upload"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:layout_marginTop="20dp"
+            android:text="@string/btn_event_create"
+            bootstrap:bb_type="primary" />
     </RelativeLayout>
 
 </ScrollView>

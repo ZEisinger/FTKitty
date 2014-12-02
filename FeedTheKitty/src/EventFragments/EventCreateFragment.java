@@ -1,8 +1,17 @@
 package EventFragments;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import main.MainActivity;
+import main.VenmoWebViewActivity;
+
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
 
 import com.beardedhen.androidbootstrap.BootstrapButton;
 import com.beardedhen.androidbootstrap.BootstrapEditText;
@@ -11,9 +20,15 @@ import com.koushikdutta.ion.Ion;
 
 import umd.cmsc.feedthekitty.R;
 import Events.EventItem;
+import Utils.CoreCallback;
+import Utils.DialogFactory;
+import Venmo.Messages;
+import android.app.DialogFragment;
 import android.app.Fragment;
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.Bundle;
 import android.provider.MediaStore;
@@ -26,6 +41,7 @@ import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.DatePicker;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
@@ -33,19 +49,24 @@ import android.widget.TimePicker;
 
 public class EventCreateFragment extends Fragment{
 
-	private Button btnCreateEvent;
+	private BootstrapButton btnCreateEvent;
 	private BootstrapEditText txtEventName;
 	private BootstrapEditText txtEventDesc;
 	private BootstrapEditText txtEventLoc;
 	private BootstrapEditText txtHashTag;
 	private BootstrapButton btnImageUpload;
+	private BootstrapButton btnVenmoVerify;
+	private TextView txtVenmoID;
 	private DatePicker eventDate;
 	private TimePicker eventTime;
+	private ImageView uploadPreview;
 	private RadioGroup visibilityGroup;
 	private RadioButton radioPublic, radioPrivate;
+	private Boolean isVenmoVerified = false;
 	private String selectedImagePath;
 	private String imageName;
 	private String paymentEmail;
+	private String paymentUser;
 
 	private static final int SELECT_PICTURE = 1;
 
@@ -61,12 +82,25 @@ public class EventCreateFragment extends Fragment{
 		txtEventDesc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_desc);
 		txtEventLoc = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_loc);
 		txtHashTag = (BootstrapEditText) getActivity().findViewById(R.id.event_create_edit_hashtag);
+		txtVenmoID = (TextView) getActivity().findViewById(R.id.event_venmo_id);
 		visibilityGroup = (RadioGroup) getActivity().findViewById(R.id.event_create_radio);
 		radioPublic = (RadioButton) getActivity().findViewById(R.id.event_create_radio_public);
 		radioPrivate = (RadioButton) getActivity().findViewById(R.id.event_create_radio_private);
 		eventDate = (DatePicker) getActivity().findViewById(R.id.event_create_pick_date);
 		eventTime = (TimePicker) getActivity().findViewById(R.id.event_create_pick_time); 
+		uploadPreview = (ImageView) getActivity().findViewById(R.id.image_view_upload);
 
+		btnVenmoVerify = (BootstrapButton) getActivity().findViewById(R.id.btn_verify_venmo);
+		btnVenmoVerify.setOnClickListener(new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				getVenmoUser();
+			}
+			
+		});
+		
 		btnImageUpload = (BootstrapButton) getActivity().findViewById(R.id.btn_event_image_upload);
 		btnImageUpload.setOnClickListener(new OnClickListener(){
 
@@ -157,40 +191,45 @@ public class EventCreateFragment extends Fragment{
 
 		});
 
-		btnCreateEvent = (Button) getActivity().findViewById(R.id.btn_event_submit);
+		btnCreateEvent = (BootstrapButton) getActivity().findViewById(R.id.btn_event_submit);
 		btnCreateEvent.setOnClickListener(new OnClickListener(){
 
 			@Override
 			public void onClick(View v) {
 				// TODO Auto-generated method stub
-				int checkedID = visibilityGroup.getCheckedRadioButtonId();
+				final int checkedID = visibilityGroup.getCheckedRadioButtonId();
 				String visibility = "private";
 				String date = getDateFromDatePicker(eventDate);
 				String time = getTimeFromTimePicker(eventTime);
-				boolean flag = false;
+				boolean flagName = false;
+				boolean flagLoc = false;
 
 
 				if(txtEventName.getText().toString().isEmpty()){
 					txtEventName.setError(getString(R.string.error_empty));
 					txtEventName.setDanger();
-					flag = false;
+					flagName = false;
 				}else{
-					flag = true;
+					flagName = true;
 				}
 
 				if(txtEventLoc.getText().toString().isEmpty()){
 					txtEventLoc.setError(getString(R.string.error_empty));
 					txtEventLoc.setDanger();
-					flag = false;
+					flagLoc = false;
 				}else{
-					flag = true;
+					flagLoc = true;
 				}
 
 				if(checkedID == radioPublic.getId()){
 					visibility = "public";
 				}
-				Log.d("FLAG","Flag: " + flag);
-				if(flag){
+
+				if(isVenmoVerified == false){
+					DialogFactory.createDialogOk(getString(R.string.error_venmo_verify)).show(getFragmentManager(), "VenmoVerified");
+				}
+				
+				if(flagLoc && flagName && isVenmoVerified){
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
 					.setBodyParameter("username", "steven")
@@ -201,8 +240,8 @@ public class EventCreateFragment extends Fragment{
 					.setBodyParameter("event_date", date)
 					.setBodyParameter("event_time", time)
 					.setBodyParameter("visibility", visibility)
-					.setBodyParameter("image_name", "bob.png")
-					.setBodyParameter("payment_email", "stevenberger101@gmail.com")
+					.setBodyParameter("image_name", imageName)
+					.setBodyParameter("payment_email", paymentUser)
 					.setBodyParameter("end", "false")
 					.asString()
 					.setCallback(new FutureCallback<String>(){
@@ -212,7 +251,36 @@ public class EventCreateFragment extends Fragment{
 							// TODO Auto-generated method stub
 							if (e != null) {
 								Log.d("TAG", "Error: " + e.getMessage());
+								if(checkedID == radioPublic.getId()){
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+								}else{
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+								}
 								return;
+							}else{
+								if(checkedID == radioPublic.getId()){
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+									DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
+										@Override
+										public void run() {
+
+										}
+									});
+									dialogFragment.show(getFragmentManager(), "CreatedDialog");
+								}else{
+									getFragmentManager().beginTransaction()
+									.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
+									DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
+										@Override
+										public void run() {
+
+										}
+									});
+									dialogFragment.show(getFragmentManager(), "CreatedDialog");
+								}
 							}
 							Log.d("CREATE", "JSON: " + result);
 						}
@@ -237,30 +305,77 @@ public class EventCreateFragment extends Fragment{
 		return inflater.inflate(R.layout.event_fragment_create, container, false);
 	}
 
+	private void getVenmoUser(){
+		Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
+		String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
+		Log.d("MainActivity", venmo_uri);
+		venmoIntent.putExtra("url", venmo_uri);
+		venmoIntent.putExtra("email", "");
+		venmoIntent.putExtra("amount", "");
+		venmoIntent.putExtra("verify_only", "true");
+		try {
+			venmoIntent.putExtra("note", URLEncoder.encode("Test", "US-ASCII"));
+		} catch (UnsupportedEncodingException e1) {
+			e1.printStackTrace();
+		}
+		venmoIntent.putExtra("visibility", "private");
+		startActivityForResult(venmoIntent, 1);
+
+	}
+
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == getActivity().RESULT_OK) {
 			if (requestCode == SELECT_PICTURE) {
-				Uri selectedImageUri = data.getData();
-				selectedImagePath = getRealPathFromURI(selectedImageUri);
-				Log.d("TAG", "FILE: " + selectedImagePath);
-				final File fileToUpload = new File(selectedImagePath);
-				Ion.with(getActivity())
-				.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
-				.setTimeout(60 * 60 * 1000)
-				.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
-				.asString()
-				.setCallback(new FutureCallback<String>() {
-					@Override
-					public void onCompleted(Exception e, String result) {
-						// When the loop is finished, updates the notification
-						if (e != null) {
-							Log.d("TAG", "Error: " + e.getMessage());
-							return;
-						}
-						Log.d("IMAGE", "JSON: " + result);
+
+				if(data.getExtras() != null && data.getExtras().getString("venmo_id") != null){
+					Log.d("TEMP", "VENMO"+data.getExtras().getString("venmo_id"));
+					paymentUser = data.getExtras().getString("venmo_id");
+					isVenmoVerified = true;
+					txtVenmoID.setText(R.string.venmo_verified);
+				}else{
+					btnImageUpload.setEnabled(false);
+					Uri selectedImageUri = data.getData();
+					selectedImagePath = getRealPathFromURI(selectedImageUri);
+					Log.d("TAG", "FILE: " + selectedImagePath);
+					final File fileToUpload = new File(selectedImagePath);
+
+					if(fileToUpload.exists()){
+						Bitmap b = BitmapFactory.decodeFile(fileToUpload.getAbsolutePath());
+						uploadPreview.setImageBitmap(b);
+
+						Ion.with(getActivity())
+						.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
+						.setTimeout(60 * 60 * 1000)
+						.setMultipartFile("fileToUpload", "image/jpeg", fileToUpload)
+						.asString()
+						.setCallback(new FutureCallback<String>() {
+							@Override
+							public void onCompleted(Exception e, String result) {
+								// When the loop is finished, updates the notification
+								if (e != null) {
+									Log.d("TAG", "Error: " + e.getMessage());
+									return;
+								}
+								JSONTokener tokener = new JSONTokener(result);
+
+								try{
+									JSONObject root = new JSONObject(tokener);
+									if(root.has("error")){
+										Log.d("ERROR", "Error: " + Messages.safeJSON(root, "error"));
+									}
+									if(root.has("name")){
+										imageName = Messages.safeJSON(root, "name");
+									}
+									btnImageUpload.setEnabled(true);
+								}catch (JSONException w){
+									w.printStackTrace();
+								}
+							}
+						});
 					}
-				});
+				}
 			}
+
 		}
 	}
 
@@ -281,25 +396,25 @@ public class EventCreateFragment extends Fragment{
 
 		return dateString;
 	}
-	
-    private String getTimeFromTimePicker(TimePicker timePicker){
-        int hour = timePicker.getCurrentHour();
-        int minutes = timePicker.getCurrentMinute();
-        boolean isPM = (hour / 12) > 0;
-        hour %= 12;
-        String strHour = String.format("%02d", hour);
-        String strMinutes = String.format("%02d", minutes);
 
-        String msg = strHour + ":" + strMinutes;
+	private String getTimeFromTimePicker(TimePicker timePicker){
+		int hour = timePicker.getCurrentHour();
+		int minutes = timePicker.getCurrentMinute();
+		boolean isPM = (hour / 12) > 0;
+		hour %= 12;
+		String strHour = String.format("%02d", hour);
+		String strMinutes = String.format("%02d", minutes);
 
-        if(isPM){
-            msg += " PM";
-        }else{
-            msg += " AM";
-        }
+		String msg = strHour + ":" + strMinutes;
 
-        return msg;
-    }
+		if(isPM){
+			msg += " PM";
+		}else{
+			msg += " AM";
+		}
+
+		return msg;
+	}
 
 }
 
