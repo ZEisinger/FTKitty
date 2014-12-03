@@ -100,9 +100,9 @@ public class EventCreateFragment extends Fragment{
 				// TODO Auto-generated method stub
 				getVenmoUser();
 			}
-			
+
 		});
-		
+
 		// Button to upload the image for an event
 		btnImageUpload = (BootstrapButton) getActivity().findViewById(R.id.btn_event_image_upload);
 		btnImageUpload.setOnClickListener(new OnClickListener(){
@@ -145,7 +145,7 @@ public class EventCreateFragment extends Fragment{
 			}
 
 		});
-		
+
 		// Sets the color of the text box back to default, the color will change if there is an error, if the user types
 		// again the color will go back to default
 		txtEventDesc.addTextChangedListener(new TextWatcher() {
@@ -239,7 +239,7 @@ public class EventCreateFragment extends Fragment{
 					// Show a dialog box if they have not verified their venmo account
 					DialogFactory.createDialogOk(getString(R.string.error_venmo_verify)).show(getFragmentManager(), "VenmoVerified");
 				}
-				
+
 				if(flagLoc && flagName && isVenmoVerified){
 					// If all the input is correct we can now make a POST and store the event in the database
 					Ion.with(getActivity())
@@ -274,10 +274,10 @@ public class EventCreateFragment extends Fragment{
 							}else{
 								// Parse the result of the POST for any errors and display them in a dialog box if they occur
 								JSONTokener tokener = new JSONTokener(result);
-								
+								boolean hasErrors = false;
 								try {
 									JSONObject root = new JSONObject(tokener);
-									
+
 									if(root.has("errors")){
 										Log.d("HEY", "HEY");
 										String temp = Messages.safeJSON(root, "errors");
@@ -288,6 +288,7 @@ public class EventCreateFragment extends Fragment{
 											for(int i = 0; i < arr.length(); i++){
 												msg+=arr.getString(i)+"\n";
 											}
+											hasErrors = true;
 											// Show all the errors we got from the JSON if there was any
 											DialogFragment dialogFragment = DialogFactory.createDialogOk(msg, new CoreCallback(){
 
@@ -295,18 +296,20 @@ public class EventCreateFragment extends Fragment{
 												public void run() {
 													// TODO Auto-generated method stub
 													getFragmentManager().beginTransaction().replace(R.id.container, new EventCreateFragment())
-														.addToBackStack("event_create").commit();
+													.addToBackStack("event_create").commit();
 												}
-												
+
 											});
 											dialogFragment.show(getFragmentManager(), "CreateErrorMessage");
 										}
-									}else{
+									}
+									if(!hasErrors){
 										// If everything was entered successfully, depending on whether the user selected
 										// the event to be private or public, they will be sent to that Fragment
 										if(checkedID == radioPublic.getId()){
 											getFragmentManager().beginTransaction()
 											.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
+											Log.d("TEST", "TEST");
 											DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {
 												@Override
 												public void run() {
@@ -326,12 +329,12 @@ public class EventCreateFragment extends Fragment{
 											dialogFragment.show(getFragmentManager(), "CreatedDialog");
 										}
 									}
-									
+
 								} catch (JSONException e1) {
 									// TODO Auto-generated catch block
 									e1.printStackTrace();
 								}
-								
+
 							}
 							Log.d("CREATE", "JSON: " + result);
 						}
@@ -393,7 +396,7 @@ public class EventCreateFragment extends Fragment{
 					selectedImagePath = getRealPathFromURI(selectedImageUri);
 					Log.d("TAG", "FILE: " + selectedImagePath);
 					final File fileToUpload = new File(selectedImagePath);
-					
+
 					// If the image exists, then we can upload it
 					if(fileToUpload.exists()){
 						// Show the user a preview of the image to be uploaded
