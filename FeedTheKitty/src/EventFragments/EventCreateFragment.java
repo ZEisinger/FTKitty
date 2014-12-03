@@ -244,7 +244,7 @@ public class EventCreateFragment extends Fragment{
 					// If all the input is correct we can now make a POST and store the event in the database
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
-					.setBodyParameter("username", "steven")
+					.setBodyParameter("username", "10152385345176566")  // Zach's FB ID for testing: 10152385345176566
 					.setBodyParameter("event_name", txtEventName.getText().toString())
 					.setBodyParameter("description", txtEventDesc.getText().toString())
 					.setBodyParameter("location", txtEventLoc.getText().toString())
@@ -275,6 +275,7 @@ public class EventCreateFragment extends Fragment{
 								// Parse the result of the POST for any errors and display them in a dialog box if they occur
 								JSONTokener tokener = new JSONTokener(result);
 								boolean hasErrors = false;
+								Log.d("RESULT", "RESULT: " + result);
 								try {
 									JSONObject root = new JSONObject(tokener);
 
@@ -318,6 +319,7 @@ public class EventCreateFragment extends Fragment{
 											});
 											dialogFragment.show(getFragmentManager(), "CreatedDialog");
 										}else{
+											Log.d("Private", "PRIVATE");
 											getFragmentManager().beginTransaction()
 											.replace(R.id.container, new PrivateEventListFragment()).addToBackStack("event_private").commit();
 											DialogFragment dialogFragment = DialogFactory.createDialogOk(getString(R.string.msg_created), new CoreCallback() {

@@ -2,6 +2,7 @@ package main;
 
 import java.util.List;
 
+import Utils.CoreCallbackString;
 import android.content.Context;
 import android.util.Log;
 
@@ -24,7 +25,7 @@ public class FriendsList {
 	public String userId;
 	public String firstName;
 
-	public FriendsList (Context context)
+	public FriendsList (Context context, final CoreCallbackString cbUserID, final CoreCallbackString cbFriends)
 	{
 		mContext = context;
 		ready = false;
@@ -45,6 +46,9 @@ public class FriendsList {
 		                    	Log.i(TAG, "UserId: " + userId);
 		                        firstName = user.getFirstName();
 		                    	Log.i(TAG, "FirstName: " + firstName);
+		                    	if(cbUserID != null){
+		                    		cbUserID.run(userId);
+		                    	}
 		                    }
 		                }
 		            }
@@ -68,6 +72,9 @@ public class FriendsList {
 	                    	Log.i(TAG, "response: " + response);
 	                    	Log.i(TAG, "users: " + users);
 	                    	Log.i(TAG, "friendsList: " + friendsList);
+	                    	if(cbFriends != null){
+	                    		cbFriends.run(friendsList);
+	                    	}
 	                    	setPrivateEvents();
 				        }
 				    }

@@ -17,6 +17,7 @@ import com.koushikdutta.ion.Ion;
 import umd.cmsc.feedthekitty.R;
 import Events.EventAdapter;
 import Events.EventItem;
+import Utils.CoreCallbackString;
 import Venmo.Messages;
 import android.app.Fragment;
 import android.content.Context;
@@ -48,6 +49,8 @@ public class EventListFragment extends Fragment{
 	public static EventAdapter eventAdapter;
 	private int lastFirstVisibleItem = 0;
 	private int preLast;
+	public static String currentUserID;
+	public static String currentUserFriends;
 
 	// Set up some information about the mQuoteView TextView 
 	@Override
@@ -55,24 +58,32 @@ public class EventListFragment extends Fragment{
 		super.onActivityCreated(savedInstanceState);
 
 		getActivity().setTitle("Public Events");
-//		FriendsList friendsList = new FriendsList(getActivity(), new CoreCallbackString() {
-//
-//			@Override
-//			public void run(String result) {
-//				// TODO Auto-generated method stub
-//				Log.d("ME", "ME: " + result);
-//			}
-//			
-//		});
+		
+		// Has two callbacks since the UserID and friends list could be received at different times
+		FriendsList friendsList = new FriendsList(getActivity(), new CoreCallbackString() {
+
+			@Override
+			// Deals with the UserID
+			public void run(String result) {
+				// TODO Auto-generated method stub
+				Log.d("ME", "ME: " + result);
+				currentUserID = result;
+			}
+			
+		}, new CoreCallbackString(){
+
+			@Override
+			// Deals with the Friends list
+			public void run(String result) {
+				// TODO Auto-generated method stub
+				currentUserFriends = result;
+			}
+			
+		});
 		
 		progressBar = (ProgressBar) getActivity().findViewById(R.id.events_progress);
 		eventList = (ListView) getActivity().findViewById(R.id.event_list_view);
 		eventAdapter = new EventAdapter(getActivity().getApplicationContext(), R.layout.event_item);
-
-//		for(int i = 0; i < 10; i++){
-//			EventItem eventItem = new EventItem("EVENT", "This is a description.", "#feedthekitty");
-//			eventAdapter.add(eventItem);
-//		}
 
 		eventList.setAdapter(eventAdapter);
 		getEvents();

@@ -1,17 +1,28 @@
 package EventFragments;
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
+
 import umd.cmsc.feedthekitty.R;
 import Events.EventAdapter;
 import Events.EventItem;
+import Venmo.Messages;
 import android.app.Fragment;
 import android.content.Context;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 public class PrivateEventListFragment extends Fragment{
@@ -19,6 +30,7 @@ public class PrivateEventListFragment extends Fragment{
 	private static String TAG = "PrivateEventListFragment";
 
 	private ListView privateEventList;
+	private ProgressBar privateProgressBar;
 	public static EventAdapter privateEventAdapter;
 
 	// Set up some information about the mQuoteView TextView 
@@ -28,16 +40,13 @@ public class PrivateEventListFragment extends Fragment{
 
 		getActivity().setTitle("Private Events");
 		
-		privateEventList = (ListView) getActivity().findViewById(R.id.private_event_list_view);
-		
+		privateProgressBar = (ProgressBar) getActivity().findViewById(R.id.private_events_progress);
+		privateEventList = (ListView) getActivity().findViewById(R.id.private_event_list_view);		
 		privateEventAdapter = new EventAdapter(getActivity().getApplicationContext(), R.layout.event_item);
 
-		for(int i = 0; i < 3; i++){
-			EventItem eventItem = new EventItem("PRIVATE EVENT" + i, "", "This is a description.", "", "", "", "");
-			privateEventAdapter.add(eventItem);
-		}
-
 		privateEventList.setAdapter(privateEventAdapter);
+		
+		getEvents(EventListFragment.currentUserFriends);
 
 		privateEventList.setOnItemClickListener(new OnItemClickListener(){
 
@@ -51,6 +60,7 @@ public class PrivateEventListFragment extends Fragment{
 				bundle.putString("event_name", privateEventAdapter.getItem(position).getEventName());
 				bundle.putString("event_desc", privateEventAdapter.getItem(position).getEventDesc());
 				bundle.putString("event_hash_tag", privateEventAdapter.getItem(position).getEventHashTag());
+				bundle.putString("username", privateEventAdapter.getItem(position).getUserName());
 				evf.setArguments(bundle);
 				
 				getFragmentManager().beginTransaction()
@@ -68,6 +78,61 @@ public class PrivateEventListFragment extends Fragment{
 		// Inflate the layout defined in quote_fragment.xml
 		// The last parameter is false because the returned view does not need to be attached to the container ViewGroup
 		return inflater.inflate(R.layout.private_event_fragment_main, container, false);
+	}
+	
+	private void getEvents(String friendsList){
+		Ion.with(getActivity())
+		.load("http://cmsc436.striveforthehighest.com/api/getEventList.php")
+		.progressBar(privateProgressBar)
+		.setBodyParameter("friend_list", friendsList)
+	    .setBodyParameter("visibility", "private")
+		.asString()
+		.setCallback(new FutureCallback<String>() {
+
+			@Override
+			public void onCompleted(Exception e, String result) {
+				// TODO Auto-generated method stub
+				Log.d("EVENT_LIST", "EVENT: " + result);
+
+				JSONTokener tokener = new JSONTokener(result);
+
+				try {
+					JSONObject root = new JSONObject(tokener);
+					
+					String temp;
+					if(root.has("errors")){
+						Log.d("HEY", "HEY");
+						temp = Messages.safeJSON(root, "errors");
+						if(temp != null && !temp.isEmpty() && !temp.equals("null")){
+							Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
+						}else if(root.has("result")){
+							JSONArray arr = root.getJSONArray("result");
+							for(int i = 0; i < arr.length(); i++){
+								JSONObject tObj = arr.getJSONObject(i);
+								String eventName = Messages.safeJSON(tObj, "event_name");
+								String eventLoc = Messages.safeJSON(tObj, "location");
+								String eventDesc = Messages.safeJSON(tObj, "description");
+								String eventHashTag = Messages.safeJSON(tObj, "hashtag");
+								String eventDate = Messages.safeJSON(tObj, "event_date");
+								String imageName = Messages.safeJSON(tObj, "image_name");
+								String userName = Messages.safeJSON(tObj, "username");
+								
+								Log.d("LIST", "NAME: " + eventName + "    " + "IMAGE: " + imageName);
+								EventItem event = new EventItem(eventName, eventLoc, eventDesc, eventHashTag, eventDate, imageName,
+										userName);
+								privateEventAdapter.add(event);
+							}
+						}
+					}
+					
+				} catch (JSONException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+			}
+
+		});
+
 	}
 
 }
