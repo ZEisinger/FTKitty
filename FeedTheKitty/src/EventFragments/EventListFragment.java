@@ -2,6 +2,8 @@ package EventFragments;
 
 import java.io.File;
 
+import main.FriendsList;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -53,7 +55,16 @@ public class EventListFragment extends Fragment{
 		super.onActivityCreated(savedInstanceState);
 
 		getActivity().setTitle("Public Events");
-
+//		FriendsList friendsList = new FriendsList(getActivity(), new CoreCallbackString() {
+//
+//			@Override
+//			public void run(String result) {
+//				// TODO Auto-generated method stub
+//				Log.d("ME", "ME: " + result);
+//			}
+//			
+//		});
+		
 		progressBar = (ProgressBar) getActivity().findViewById(R.id.events_progress);
 		eventList = (ListView) getActivity().findViewById(R.id.event_list_view);
 		eventAdapter = new EventAdapter(getActivity().getApplicationContext(), R.layout.event_item);

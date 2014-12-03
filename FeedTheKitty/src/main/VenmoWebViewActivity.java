@@ -31,6 +31,7 @@ public class VenmoWebViewActivity extends Activity {
 	Context mContext;
 	private WebView mVenmoWebView;
 	String mUrl;
+	private String username;
 	private String user_id;
 	private String amount;
 	private String note;
@@ -43,6 +44,7 @@ public class VenmoWebViewActivity extends Activity {
 		//requestWindowFeature(Window.FEATURE_CUSTOM_TITLE);
 		setContentView(R.layout.event_venmo_webview);
 
+		username = getIntent().getExtras().getString("username");
 		mUrl = getIntent().getExtras().getString("url");
 		user_id = getIntent().getExtras().getString("user_id");
 		amount = getIntent().getExtras().getString("amount");
@@ -168,6 +170,25 @@ public class VenmoWebViewActivity extends Activity {
 															, new CoreCallback() {
 														@Override
 														public void run() {
+															
+															Ion.with(mContext)
+																.load("http://cmsc436.striveforthehighest.com/api/confirmPayment.php")
+																.setBodyParameter("username", username)
+																.setBodyParameter("receive_payment_email", user_id)
+																.setBodyParameter("payment_amount", amount)
+																.asString()
+																.setCallback( new FutureCallback<String>() {
+
+																	@Override
+																	public void onCompleted(
+																			Exception arg0,
+																			String arg1) {
+																		// TODO Auto-generated method stub
+																		//DO NOTHING
+																	}
+																	
+																});
+															
 															Intent intent = new Intent(VenmoWebViewActivity.this, MainActivity.class);
 															startActivity(intent);
 														}

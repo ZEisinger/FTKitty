@@ -91,6 +91,7 @@ public class EventCreateFragment extends Fragment{
 		eventTime = (TimePicker) getActivity().findViewById(R.id.event_create_pick_time); 
 		uploadPreview = (ImageView) getActivity().findViewById(R.id.image_view_upload);
 
+		// Button for venmo verification, this is needed to make sure the event creation user can receive payments
 		btnVenmoVerify = (BootstrapButton) getActivity().findViewById(R.id.btn_verify_venmo);
 		btnVenmoVerify.setOnClickListener(new OnClickListener() {
 
@@ -102,6 +103,7 @@ public class EventCreateFragment extends Fragment{
 			
 		});
 		
+		// Button to upload the image for an event
 		btnImageUpload = (BootstrapButton) getActivity().findViewById(R.id.btn_event_image_upload);
 		btnImageUpload.setOnClickListener(new OnClickListener(){
 
@@ -117,6 +119,8 @@ public class EventCreateFragment extends Fragment{
 
 		});
 
+		// Sets the color of the text box back to default, the color will change if there is an error, if the user types
+		// again the color will go back to default
 		txtEventName.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -141,7 +145,9 @@ public class EventCreateFragment extends Fragment{
 			}
 
 		});
-
+		
+		// Sets the color of the text box back to default, the color will change if there is an error, if the user types
+		// again the color will go back to default
 		txtEventDesc.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -167,6 +173,8 @@ public class EventCreateFragment extends Fragment{
 
 		});
 
+		// Sets the color of the text box back to default, the color will change if there is an error, if the user types
+		// again the color will go back to default
 		txtEventLoc.addTextChangedListener(new TextWatcher() {
 
 			@Override
@@ -192,6 +200,7 @@ public class EventCreateFragment extends Fragment{
 
 		});
 
+		// Button to create the event, handles all the input error checking
 		btnCreateEvent = (BootstrapButton) getActivity().findViewById(R.id.btn_event_submit);
 		btnCreateEvent.setOnClickListener(new OnClickListener(){
 
@@ -227,10 +236,12 @@ public class EventCreateFragment extends Fragment{
 				}
 
 				if(isVenmoVerified == false){
+					// Show a dialog box if they have not verified their venmo account
 					DialogFactory.createDialogOk(getString(R.string.error_venmo_verify)).show(getFragmentManager(), "VenmoVerified");
 				}
 				
 				if(flagLoc && flagName && isVenmoVerified){
+					// If all the input is correct we can now make a POST and store the event in the database
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
 					.setBodyParameter("username", "steven")
@@ -261,6 +272,7 @@ public class EventCreateFragment extends Fragment{
 								}
 								return;
 							}else{
+								// Parse the result of the POST for any errors and display them in a dialog box if they occur
 								JSONTokener tokener = new JSONTokener(result);
 								
 								try {
@@ -276,6 +288,7 @@ public class EventCreateFragment extends Fragment{
 											for(int i = 0; i < arr.length(); i++){
 												msg+=arr.getString(i)+"\n";
 											}
+											// Show all the errors we got from the JSON if there was any
 											DialogFragment dialogFragment = DialogFactory.createDialogOk(msg, new CoreCallback(){
 
 												@Override
@@ -289,6 +302,8 @@ public class EventCreateFragment extends Fragment{
 											dialogFragment.show(getFragmentManager(), "CreateErrorMessage");
 										}
 									}else{
+										// If everything was entered successfully, depending on whether the user selected
+										// the event to be private or public, they will be sent to that Fragment
 										if(checkedID == radioPublic.getId()){
 											getFragmentManager().beginTransaction()
 											.replace(R.id.container, new EventListFragment()).addToBackStack("event_public").commit();
@@ -341,6 +356,7 @@ public class EventCreateFragment extends Fragment{
 		return inflater.inflate(R.layout.event_fragment_create, container, false);
 	}
 
+	// Gets the event creator's venmo id, we store this so we know where to send the payments for an event to
 	private void getVenmoUser(){
 		Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
 		String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
@@ -364,21 +380,27 @@ public class EventCreateFragment extends Fragment{
 			if (requestCode == SELECT_PICTURE) {
 
 				if(data.getExtras() != null && data.getExtras().getString("venmo_id") != null){
+					// If the venmo id is present, then we want to let the user know that their venmo account has been verified
 					Log.d("TEMP", "VENMO"+data.getExtras().getString("venmo_id"));
 					paymentUser = data.getExtras().getString("venmo_id");
 					isVenmoVerified = true;
 					txtVenmoID.setText(R.string.venmo_verified);
 				}else{
-					btnImageUpload.setEnabled(false);
+					// If there is an image to be uploaded, we want to disable the event creation button until the upload is
+					// done, this will hopefully stop a case where an upload was not finished and the user still created an event
+					btnCreateEvent.setEnabled(false);
 					Uri selectedImageUri = data.getData();
 					selectedImagePath = getRealPathFromURI(selectedImageUri);
 					Log.d("TAG", "FILE: " + selectedImagePath);
 					final File fileToUpload = new File(selectedImagePath);
-
+					
+					// If the image exists, then we can upload it
 					if(fileToUpload.exists()){
+						// Show the user a preview of the image to be uploaded
 						Bitmap b = BitmapFactory.decodeFile(fileToUpload.getAbsolutePath());
 						uploadPreview.setImageBitmap(b);
 
+						// Upload the image
 						Ion.with(getActivity())
 						.load("http://cmsc436.striveforthehighest.com/api/receivePhoto.php")
 						.setTimeout(60 * 60 * 1000)
@@ -402,7 +424,8 @@ public class EventCreateFragment extends Fragment{
 									if(root.has("name")){
 										imageName = Messages.safeJSON(root, "name");
 									}
-									btnImageUpload.setEnabled(true);
+									// Once the upload is done we can re-enable the event creation button
+									btnCreateEvent.setEnabled(true);
 								}catch (JSONException w){
 									w.printStackTrace();
 								}

@@ -87,7 +87,7 @@ public class EventViewFragment extends Fragment{
 
 		String eventName = getArguments().getString("event_name");
 		String eventDesc = getArguments().getString("event_desc");
-		String userName = getArguments().getString("username");
+		String eventUserName = getArguments().getString("username");
 		final String eventHashTag = getArguments().getString("event_hash_tag");
 
 		getActivity().getActionBar().setTitle(eventName);
@@ -104,7 +104,7 @@ public class EventViewFragment extends Fragment{
 		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
 		txtEventDesc.setText(eventDesc);
 
-		getEvent(userName, eventName);
+		getEvent(eventUserName, eventName);
 
 		handler = new Handler();
 
@@ -174,6 +174,7 @@ public class EventViewFragment extends Fragment{
 							Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
 							String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
 							Log.d("MainActivity", venmo_uri);
+							venmoIntent.putExtra("username", "steven");
 							venmoIntent.putExtra("url", venmo_uri);
 							venmoIntent.putExtra("user_id", paymentID);
 							venmoIntent.putExtra("amount", paymentAmount.getText().toString());
