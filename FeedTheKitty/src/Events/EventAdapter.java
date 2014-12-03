@@ -81,6 +81,8 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 		if(event.getImageName() != null && !event.getImageName().isEmpty() && !event.getImageName().equals("null")){
 			Log.d("EVENT_NAME_ADAPTER", "NAME: " + event.getEventName());
 			Utils.Utils.loadImage(viewHolder.eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + event.getImageName());
+		}else{
+			viewHolder.eventIcon.setImageDrawable(null);
 		}
 		
 		return row;
