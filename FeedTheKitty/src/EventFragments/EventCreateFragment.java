@@ -244,11 +244,11 @@ public class EventCreateFragment extends Fragment{
 					// If all the input is correct we can now make a POST and store the event in the database
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
-					.setBodyParameter("username", "10152385345176566")  // Zach's FB ID for testing: 10152385345176566
+					.setBodyParameter("username", EventListFragment.currentUserID)  // Zach's FB ID for testing: 10152385345176566
 					.setBodyParameter("event_name", txtEventName.getText().toString())
 					.setBodyParameter("description", txtEventDesc.getText().toString())
 					.setBodyParameter("location", txtEventLoc.getText().toString())
-					.setBodyParameter("hashtag", "#"+txtHashTag.getText().toString())
+					.setBodyParameter("hashtag", "#"+txtHashTag.getText().toString().replace("#", ""))
 					.setBodyParameter("event_date", date)
 					.setBodyParameter("event_time", time)
 					.setBodyParameter("visibility", visibility)
@@ -443,6 +443,7 @@ public class EventCreateFragment extends Fragment{
 		}
 	}
 
+	// Gets the actual path to the image on the device, this helps in uploading the actual image
 	public String getRealPathFromURI(Uri uri) {
 		Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null); 
 		cursor.moveToFirst(); 
@@ -450,6 +451,7 @@ public class EventCreateFragment extends Fragment{
 		return cursor.getString(idx); 
 	}
 
+	// Convert the date from DatePicker to a nice readable string
 	private String getDateFromDatePicker(DatePicker datePicker){
 
 		long dateTime = datePicker.getCalendarView().getDate();
@@ -461,6 +463,7 @@ public class EventCreateFragment extends Fragment{
 		return dateString;
 	}
 
+	// Convert the time from TimePicker to a nice readable string
 	private String getTimeFromTimePicker(TimePicker timePicker){
 		int hour = timePicker.getCurrentHour();
 		int minutes = timePicker.getCurrentMinute();
