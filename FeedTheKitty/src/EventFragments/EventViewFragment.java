@@ -164,15 +164,15 @@ public class EventViewFragment extends Fragment{
 					@Override
 					public void run() {
 						// TODO Auto-generated method stub
-						try {
-							Intent venmoIntent = VenmoLibrary.openVenmoPayment("2097", "Feed the Kitty",
-									paymentID,
-									paymentAmount.getText().toString(),
-									paymentNote.getText().toString(), "pay");
-							startActivityForResult(venmoIntent, 1); //1 is the requestCode we are using for Venmo. Feel free to change this to another number.
-						}
-						catch (android.content.ActivityNotFoundException e) //Venmo native app not install on device, so let's instead open a mobile web version of Venmo in a WebView
-						{
+//						try {
+//							Intent venmoIntent = VenmoLibrary.openVenmoPayment("2097", "Feed the Kitty",
+//									paymentID,
+//									paymentAmount.getText().toString(),
+//									paymentNote.getText().toString(), "pay");
+//							startActivityForResult(venmoIntent, 1); //1 is the requestCode we are using for Venmo. Feel free to change this to another number.
+//						}
+//						catch (android.content.ActivityNotFoundException e) //Venmo native app not install on device, so let's instead open a mobile web version of Venmo in a WebView
+//						{
 
 							Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
 							String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
@@ -187,7 +187,7 @@ public class EventViewFragment extends Fragment{
 							venmoIntent.putExtra("event_user", eventUserName);
 							venmoIntent.putExtra("visibility", "private");
 							startActivityForResult(venmoIntent, 1);
-						}
+//						}
 					}
 
 				}).show(getFragmentManager(), "VenmoDonate");
