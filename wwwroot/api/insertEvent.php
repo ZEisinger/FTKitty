@@ -12,7 +12,7 @@ $sql_state = "";
 $invalid_type = false;
 $id = null;
 
-$page = json_decode(file_get_contents("http://cmsc436.striveforthehighest.com/api/findEvent.php?username=" . $_POST["username"] . "&event_name=" . $_POST["event_name"]), true);
+$page = json_decode(file_get_contents("http://cmsc436.striveforthehighest.com/api/findEvent.php?username=" . urlencode($_POST["username"]) . "&event_name=" . urlencode($_POST["event_name"])), true);
 
 if ($page['result'] === null)
 {
