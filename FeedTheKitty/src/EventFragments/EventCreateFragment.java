@@ -446,10 +446,20 @@ public class EventCreateFragment extends Fragment{
 
 	// Gets the actual path to the image on the device, this helps in uploading the actual image
 	public String getRealPathFromURI(Uri uri) {
-		Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null); 
-		cursor.moveToFirst(); 
-		int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA); 
-		return cursor.getString(idx); 
+//		Cursor cursor = getActivity().getContentResolver().query(uri, null, null, null, null); 
+//		cursor.moveToFirst(); 
+//		int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA); 
+//		return cursor.getString(idx);
+		
+        String[] filePathColumn = { MediaStore.Images.Media.DATA };
+        Cursor cursor = getActivity().getContentResolver().query(uri,
+                filePathColumn, null, null, null);
+        cursor.moveToFirst();
+        int columnIndex = cursor.getColumnIndex(filePathColumn[0]);
+        String picturePath = cursor.getString(columnIndex);
+        Log.d("Main Activity",picturePath);
+        cursor.close();
+        return picturePath;
 	}
 
 	// Convert the date from DatePicker to a nice readable string

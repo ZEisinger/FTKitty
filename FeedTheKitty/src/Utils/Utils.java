@@ -4,6 +4,7 @@ import java.text.ParsePosition;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.koushikdutta.ion.Ion;
@@ -16,7 +17,9 @@ public class Utils {
 	}
 
 	public static boolean isEnd(String date, String time){
-		Date expiredDate = stringToDate(date, "MM-dd-yyyy");
+		String dateTime = date + " " + time;
+		Log.d("dateTime", "DATE TIME: " + dateTime);
+		Date expiredDate = stringToDate(dateTime, "MM-dd-yyyy hh:mm aaa");
 		Date now = new Date();
 		if(now.after(expiredDate)){
 			return true;
