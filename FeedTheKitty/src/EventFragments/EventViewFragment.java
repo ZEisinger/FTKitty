@@ -86,9 +86,9 @@ public class EventViewFragment extends Fragment{
 //		.build();
 //		uiHelper.trackPendingDialogCall(shareDialog.present());
 
-		String eventName = getArguments().getString("event_name");
+		final String eventName = getArguments().getString("event_name");
 		String eventDesc = getArguments().getString("event_desc");
-		String eventUserName = getArguments().getString("username");
+		final String eventUserName = getArguments().getString("username");
 		final String eventHashTag = getArguments().getString("event_hash_tag");
 
 		getActivity().getActionBar().setTitle(
@@ -177,12 +177,14 @@ public class EventViewFragment extends Fragment{
 							Intent venmoIntent = new Intent(getActivity(), VenmoWebViewActivity.class);
 							String venmo_uri = "https://api.venmo.com/v1/oauth/authorize?client_id=2097&scope=make_payments%20access_profile&response_type=token";
 							Log.d("MainActivity", venmo_uri);
-							venmoIntent.putExtra("username", "steven");
+							venmoIntent.putExtra("username", EventListFragment.currentUserID);
 							venmoIntent.putExtra("url", venmo_uri);
 							venmoIntent.putExtra("user_id", paymentID);
 							venmoIntent.putExtra("amount", paymentAmount.getText().toString());
 							venmoIntent.putExtra("verify_only", "false");
 							venmoIntent.putExtra("note", paymentNote.getText().toString());
+							venmoIntent.putExtra("event_name", eventName);
+							venmoIntent.putExtra("event_user", eventUserName);
 							venmoIntent.putExtra("visibility", "private");
 							startActivityForResult(venmoIntent, 1);
 						}
