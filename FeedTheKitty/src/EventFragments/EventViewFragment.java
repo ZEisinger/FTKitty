@@ -59,6 +59,7 @@ public class EventViewFragment extends Fragment{
 
 	private BootstrapButton btnPay;
 	private BootstrapButton btnShare;
+	private BootstrapButton btnShareOther;
 	private TextView txtEventDesc;
 	private TextView txtEventDate;
 	private TextView txtEventTime;
@@ -147,6 +148,21 @@ public class EventViewFragment extends Fragment{
 				}
 			}
 
+		});
+		
+		btnShareOther = (BootstrapButton) getActivity().findViewById(R.id.btn_event_view_share);
+		btnShareOther.setOnClickListener(new OnClickListener(){
+
+			@Override
+			public void onClick(View v) {
+				// TODO Auto-generated method stub
+				Intent shareIntent = new Intent(android.content.Intent.ACTION_SEND);
+			    shareIntent.setType("text/plain");
+			    shareIntent.putExtra(android.content.Intent.EXTRA_TEXT, eventHashTag);    
+
+			    getActivity().startActivity(Intent.createChooser(shareIntent, getActivity().getString(R.string.btn_share)));
+			}
+			
 		});
 
 		btnPay = (BootstrapButton) getActivity().findViewById(R.id.btn_event_view_donate);	
