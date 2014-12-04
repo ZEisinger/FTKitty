@@ -37,6 +37,8 @@ public class VenmoWebViewActivity extends Activity {
 	private String note;
 	private String visibility;
 	private String verifyOnly;
+	private String eventUserName;
+	private String eventName;
 
 	@Override
 	public void onCreate(Bundle icicle) {
@@ -51,7 +53,8 @@ public class VenmoWebViewActivity extends Activity {
 		note = getIntent().getExtras().getString("note");
 		visibility = getIntent().getExtras().getString("visibility");
 		verifyOnly = getIntent().getExtras().getString("verify_only");
-
+		eventUserName = getIntent().getExtras().getString("event_user");
+		eventName = getIntent().getExtras().getString("event_name");
 		mContext = this;
 
 		mVenmoWebView = (WebView)getLastNonConfigurationInstance();
@@ -176,6 +179,8 @@ public class VenmoWebViewActivity extends Activity {
 																.setBodyParameter("username", username)
 																.setBodyParameter("receive_payment_email", user_id)
 																.setBodyParameter("payment_amount", amount)
+																.setBodyParameter("event_name", eventName)
+																.setBodyParameter("event_username", eventUserName)
 																.asString()
 																.setCallback( new FutureCallback<String>() {
 

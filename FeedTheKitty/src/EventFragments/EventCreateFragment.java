@@ -245,6 +245,7 @@ public class EventCreateFragment extends Fragment{
 					Ion.with(getActivity())
 					.load("http://cmsc436.striveforthehighest.com/api/insertEvent.php")
 					.setBodyParameter("username", EventListFragment.currentUserID)  // Zach's FB ID for testing: 10152385345176566
+					.setBodyParameter("name", EventListFragment.currentUserFullName)
 					.setBodyParameter("event_name", txtEventName.getText().toString())
 					.setBodyParameter("description", txtEventDesc.getText().toString())
 					.setBodyParameter("location", txtEventLoc.getText().toString())
@@ -456,7 +457,7 @@ public class EventCreateFragment extends Fragment{
 
 		long dateTime = datePicker.getCalendarView().getDate();
 		Date date = new Date(dateTime);
-
+		
 		SimpleDateFormat sdf = new SimpleDateFormat("MM-dd-yyyy");
 		String dateString = sdf.format(date);
 

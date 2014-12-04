@@ -51,7 +51,8 @@ public class EventListFragment extends Fragment{
 	private int preLast;
 	public static String currentUserID;
 	public static String currentUserFriends;
-
+	public static String currentUserFullName;
+	
 	// Set up some information about the mQuoteView TextView 
 	@Override
 	public void onActivityCreated(Bundle savedInstanceState) {
@@ -64,17 +65,18 @@ public class EventListFragment extends Fragment{
 
 			@Override
 			// Deals with the UserID
-			public void run(String result) {
+			public void run(String result, String resultFullName) {
 				// TODO Auto-generated method stub
 				Log.d("ME", "ME: " + result);
 				currentUserID = result;
+				currentUserFullName = resultFullName;
 			}
 			
 		}, new CoreCallbackString(){
 
 			@Override
 			// Deals with the Friends list
-			public void run(String result) {
+			public void run(String result, String resultFullName) {
 				// TODO Auto-generated method stub
 				currentUserFriends = result;
 			}
@@ -191,9 +193,17 @@ public class EventListFragment extends Fragment{
 								String userName = Messages.safeJSON(tObj, "username");
 								
 								Log.d("LIST", "NAME: " + eventName + "    " + "IMAGE: " + imageName);
-								EventItem event = new EventItem(eventName, eventLoc, eventDesc, eventHashTag, eventDate, imageName,
-										userName);
-								eventAdapter.add(event);
+								boolean isEnd = Utils.Utils.isEnd(eventDate, "");
+								if(isEnd){
+									Log.d("EVENT ENDED", "END: " + isEnd);
+									// Do nothing with event, it is over and should not be displayed
+									
+								}else{
+									EventItem event = new EventItem(eventName, eventLoc, eventDesc, eventHashTag, eventDate, imageName,
+											userName);
+									eventAdapter.add(event);
+								}
+
 							}
 						}
 					}
