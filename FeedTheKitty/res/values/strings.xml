@@ -19,6 +19,7 @@
     <string name="total_event_tag">Total Event Entered: </string>
     <string name="total_amount_tag">Total Amount Donated: $</string>
     <string name="thank_you">Thank you</string>
+    <string name="detail_payment">You Paid: </string>
 
     <!-- Resources -->
     <string name="facebook_app_id">681451701962786</string>

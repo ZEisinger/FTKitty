@@ -12,8 +12,9 @@ public class EventItem {
 	private String imageName;
 	private String eventHashtag;
 	private String hostName;
+	private String payment;
 	
-	public EventItem(String eventName, String eventLocation, String eventDescription, String eventDate, String eventTime, String eventHashtag, String imageName, String userName){
+	public EventItem(String eventName, String eventLocation, String eventDescription, String eventDate, String eventTime, String eventHashtag, String imageName, String userName, String payment){
 		this.eventName = eventName;
 		this.eventLocation = eventLocation;
 		this.eventDescription = eventDescription;
@@ -22,6 +23,7 @@ public class EventItem {
 		this.imageName = imageName;
 		this.eventHashtag = eventHashtag;
 		this.hostName = userName;
+		this.payment = payment;
 	}
 	
 	public EventItem(Intent intent){
@@ -33,6 +35,7 @@ public class EventItem {
 		this.imageName = intent.getStringExtra("ImageName");
 		this.eventHashtag = intent.getStringExtra("EventHashtag");
 		this.hostName = intent.getStringExtra("Username");
+		this.payment = intent.getStringExtra("Payment");
 	}
 	
 	public String getEventName(){
@@ -67,6 +70,10 @@ public class EventItem {
 		return this.hostName;
 	}
 	
+	public String getPayment(){
+		return this.payment;
+	}
+	
 	public Intent packageToIntent(){
 		Intent intent = new Intent();
 		intent.putExtra("EventName", eventName);
@@ -77,6 +84,7 @@ public class EventItem {
 		intent.putExtra("ImageName", imageName);
 		intent.putExtra("EventHashtag", eventHashtag);
 		intent.putExtra("Username", hostName);
+		intent.putExtra("Payment", payment);
 		return intent;
 	}
 	

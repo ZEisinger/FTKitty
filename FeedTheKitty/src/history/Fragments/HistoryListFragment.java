@@ -79,6 +79,8 @@ public class HistoryListFragment extends Fragment {
 						eventAdapter.getItem(position).getEventDescription());
 				bundle.putString("Username", eventAdapter.getItem(position).getUserName());
 				detail.setArguments(bundle);
+				bundle.putString("Payment", eventAdapter.getItem(position).getPayment());
+				detail.setArguments(bundle);
 
 				getFragmentManager().beginTransaction()
 						.replace(R.id.container, detail)
@@ -145,6 +147,8 @@ public class HistoryListFragment extends Fragment {
 												tObj, "image_name");
 										String userName = Messages.safeJSON(
 												tObj, "username");
+										String payment = Messages.safeJSON(
+												tObj, "payment_amount");
 
 										Log.d("LIST", "NAME: " + eventName
 												+ "    " + "IMAGE: "
@@ -153,13 +157,12 @@ public class HistoryListFragment extends Fragment {
 												eventName, eventLoc, eventDesc,
 												eventDate, eventTime,
 												eventHashTag, imageName,
-												userName);
+												userName, payment);
 										eventAdapter.add(event);
 									}
 								}
 								if (root.has("sum")) {
 									String sum = Messages.safeJSON(root, "sum");
-									Log.w("SUM", sum);
 									amount = (TextView) getActivity()
 											.findViewById(
 													R.id.history_list_total_amount);
