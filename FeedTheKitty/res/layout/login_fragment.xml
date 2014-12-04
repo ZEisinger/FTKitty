@@ -10,7 +10,7 @@
     tools:context="main.LoginActivity$PlaceholderFragment" >
 
     <LinearLayout
-        android:id="@+id/history_detail_segment1"
+        android:id="@+id/login_segment1"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="center_vertical"
@@ -20,7 +20,7 @@
         android:weightSum="1" >
 
         <LinearLayout
-            android:id="@+id/login_segment1"
+            android:id="@+id/login_segment1.1"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="center_vertical"
@@ -38,7 +38,7 @@
                 android:textStyle="bold"
                 android:typeface="sans"
                 android:text="@string/app_name"
-                android:textColor="#FE8909"/>"
+                android:textColor="#FE8909"/>
            </LinearLayout>
 
             <com.facebook.widget.LoginButton

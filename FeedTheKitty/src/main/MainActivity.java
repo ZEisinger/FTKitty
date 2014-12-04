@@ -134,8 +134,8 @@ public class MainActivity extends Activity
 
 	@Override
 	public void onDestroy() {
+		uiHelper.onDestroy();
 	    super.onDestroy();
-	    uiHelper.onDestroy();
 	}
 
 	@Override
@@ -167,12 +167,12 @@ public class MainActivity extends Activity
 		        fragmentManager.beginTransaction()
 					.replace(R.id.container, new HistoryListFragment()).addToBackStack("event_history").commit();
 				break;
-            case NavigationDrawerFragment.SETTINGS_ITEM:
-			fragmentManager
-					.beginTransaction()
-					.replace(R.id.container,
-							SettingsFragment.newInstance(position)).commit();
-		        break;
+//            case NavigationDrawerFragment.LOG_OUT:
+//			fragmentManager
+//					.beginTransaction()
+//					.replace(R.id.container,
+//							SettingsFragment.newInstance(position)).commit();
+//		        break;
     	}
     }
 
@@ -190,9 +190,9 @@ public class MainActivity extends Activity
             case 3:
             	mTitle = getString(R.string.title_history);
             	break;
-            case NavigationDrawerFragment.SETTINGS_ITEM:
-            	mTitle = getString(R.string.settings);
-            	break;
+//            case NavigationDrawerFragment.LOG_OUT:
+//            	mTitle = getString(R.string.settings);
+//            	break;
         }
     }
 
@@ -233,7 +233,24 @@ public class MainActivity extends Activity
 	        startActivity(i);
 	    }
 	}
+	
+	public CharSequence getActivityTitle(){
+		return mTitle;
+	}
 
+	@Override
+    public void onBackPressed()
+    {
+        getActionBar().setTitle(Html.fromHtml("<font color='#FE8909'>"+ mTitle +"</font>"));
+        if (mNavigationDrawerFragment.isDrawerOpen())
+        	if (getFragmentManager().getBackStackEntryCount() == 0) {
+                this.finish();
+            } else {
+                getFragmentManager().popBackStack();
+            }
+        super.onBackPressed();
+    }
+	
     /**
      * A placeholder fragment containing a simple view.
      */
