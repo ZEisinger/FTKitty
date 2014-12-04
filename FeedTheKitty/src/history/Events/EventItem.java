@@ -9,17 +9,19 @@ public class EventItem {
 	private String eventDescription;
 	private String eventDate;
 	private String eventTime;
-	private String eventHashtagDescription;
+	private String imageName;
 	private String eventHashtag;
+	private String hostName;
 	
-	public EventItem(String eventName, String eventLocation, String eventDescription, String eventDate, String eventTime, String eventHashtagDescription, String eventHashtag){
+	public EventItem(String eventName, String eventLocation, String eventDescription, String eventDate, String eventTime, String eventHashtag, String imageName, String userName){
 		this.eventName = eventName;
 		this.eventLocation = eventLocation;
 		this.eventDescription = eventDescription;
 		this.eventDate = eventDate;
 		this.eventTime = eventTime;
-		this.eventHashtagDescription = eventHashtagDescription;
+		this.imageName = imageName;
 		this.eventHashtag = eventHashtag;
+		this.hostName = userName;
 	}
 	
 	public EventItem(Intent intent){
@@ -28,8 +30,9 @@ public class EventItem {
 		this.eventDescription = intent.getStringExtra("EventDescription");
 		this.eventDate = intent.getStringExtra("EventDate");
 		this.eventTime = intent.getStringExtra("EventTime");
-		this.eventHashtagDescription = intent.getStringExtra("EventHashtagDescription");
+		this.imageName = intent.getStringExtra("ImageName");
 		this.eventHashtag = intent.getStringExtra("EventHashtag");
+		this.hostName = intent.getStringExtra("Username");
 	}
 	
 	public String getEventName(){
@@ -52,12 +55,16 @@ public class EventItem {
 		return this.eventTime;
 	}
 	
-	public String getEventHashtagDescription(){
-		return this.eventHashtagDescription;
+	public String getImageName(){
+		return this.imageName;
 	}
 	
 	public String getEventHashtag(){
 		return this.eventHashtag;
+	}
+	
+	public String getUserName(){
+		return this.hostName;
 	}
 	
 	public Intent packageToIntent(){
@@ -67,8 +74,9 @@ public class EventItem {
 		intent.putExtra("EventTime", eventTime);
 		intent.putExtra("EventLocation", eventLocation);
 		intent.putExtra("EventDescription", eventDescription);
-		intent.putExtra("EventHashtagDescription", eventHashtagDescription);
+		intent.putExtra("ImageName", imageName);
 		intent.putExtra("EventHashtag", eventHashtag);
+		intent.putExtra("Username", hostName);
 		return intent;
 	}
 	
