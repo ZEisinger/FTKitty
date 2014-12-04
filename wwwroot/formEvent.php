@@ -14,6 +14,7 @@
     visibility (public or other) <input type="text" name="visibility"><br />
     image_name (127 chars) <input type="text" name="image_name"><br />
     payment_email (63 chars) <input type="text" name="payment_email"><br />
+    name (255 chars) <input type="text" name="name"><br />
     end (true or false, default false) <input type="text" name="end"><br />
     <input type="submit" value="Create event" name="submit">
 </form>

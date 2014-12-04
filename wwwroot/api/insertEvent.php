@@ -24,9 +24,9 @@ if ($page['result'] === null)
   }
 
   if ( strtolower ( $_POST["visibility"] ) == "public" )
-    $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, end) VALUES (?,?,?,?,?,?,?,1,?,?";
+    $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, name, end) VALUES (?,?,?,?,?,?,?,1,?,?,?";
   else
-    $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, end) VALUES (?,?,?,?,?,?,?,0,?,?";
+    $sql_state = "INSERT INTO events (username, event_name, description, location, hashtag, event_date, event_time, vis_public, image_name, payment_email, name, end) VALUES (?,?,?,?,?,?,?,0,?,?,?";
 
   if ( strtolower ( $_POST["end"] ) == "true" )
     $sql_state = $sql_state . ",1)";
@@ -39,9 +39,9 @@ if ($page['result'] === null)
   if ( $prep = $sql->prepare($sql_state) ) {
     /* first we want to bind $findname to the first ? in our statement
     since it is a string, we'll use 's' */
-    $prep->bind_param("sssssssss", $_POST["username"], $_POST["event_name"], $_POST["description"], 
+    $prep->bind_param("ssssssssss", $_POST["username"], $_POST["event_name"], $_POST["description"], 
                       $_POST["location"], $_POST["hashtag"], $_POST["event_date"], 
-                      $_POST["event_time"], $_POST["image_name"], $_POST["payment_email"]);
+                      $_POST["event_time"], $_POST["image_name"], $_POST["payment_email"], $_POST["name"]);
 
     /* execute the statement */
     $prep->execute();

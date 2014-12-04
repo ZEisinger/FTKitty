@@ -11,6 +11,8 @@ $db_desti = "localhost";
 $sql_state = "";
 $invalid_type = false;
 $id = null;
+$sum = 0;
+$eventCount = 0;
 
 $sql = new mysqli( $db_desti, $db_uname, $db_pword, $db_dbase );
 
@@ -31,6 +33,7 @@ if ($sql->connect_errno) {
                     vis_public,
                     image_name,
                     attendence.payment_email,
+                    name,
                     end
                 FROM
                     attendence
@@ -59,6 +62,7 @@ $result = array(
             'vis_public' => null,
             'image_name' => null,
             'payment_email' => null,
+            'name' => null,
             'end' => null
           );
 
@@ -77,6 +81,7 @@ if ( sizeof($error) == 0)
             $result['vis_public'],
             $result['image_name'],
             $result['payment_email'],
+            $result['name'],
             $result['end']
          );
 
@@ -87,6 +92,7 @@ if ( sizeof($error) == 0)
   
   /* now we want to fetch the data from the database */
   while ($prep->fetch()) {
+    $sum += $result['payment_amount'];
     array_push( $array_results,
             array(
               'event_id' => $result['id'],
@@ -101,9 +107,11 @@ if ( sizeof($error) == 0)
               'vis_public' => $result['vis_public'] ? 'public' : 'private',
               'image_name' => $result['image_name'],
               'payment_email' => $result['payment_email'],
+              'name' => $result['name'],
               'end' => $result['end'] ? 'history' : 'active'
             )
           );
+    $eventCount = $eventCount + 1;
   }
 
   /* close the statement */
@@ -115,14 +123,18 @@ if ( sizeof($error) > 0 ) {
     $object = array(
         'status' => '400',
         'errors' => $error,
-        'result' => $array_results
+        'result' => $array_results,
+        'sum' => $sum,
+        'eventCount' => $eventCount
       );
     echo json_encode( $object );
   } else {
     $object = array(
         'status' => '500',
         'errors' => 'There was a problem preparing your statement',
-        'result' => $array_results
+        'result' => $array_results,
+        'sum' => $sum,
+        'eventCount' => $eventCount
       );
     echo json_encode( $object );
   }
@@ -130,7 +142,9 @@ if ( sizeof($error) > 0 ) {
   $object = array(
       'status' => '200',
       'errors' => null,
-      'result' => $array_results
+      'result' => $array_results,
+      'sum' => $sum,
+      'eventCount' => $eventCount
 	  );
   echo json_encode( $object );
 }

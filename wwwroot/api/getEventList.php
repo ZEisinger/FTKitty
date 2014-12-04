@@ -36,6 +36,7 @@ if ($sql->connect_errno) {
                     vis_public,
                     image_name,
                     payment_email,
+                    name,
                     end
                 FROM
                     events
@@ -73,6 +74,7 @@ $result = array(
             'vis_public' => null,
             'image_name' => null,
             'payment_email' => null,
+            'name' => null,
             'end' => null
           );
 
@@ -90,6 +92,7 @@ if ( sizeof($error) == 0)
             $result['vis_public'],
             $result['image_name'],
             $result['payment_email'],
+            $result['name'],
             $result['end']
          );
 
@@ -117,6 +120,7 @@ if ( sizeof($error) == 0)
               'vis_public' => $result['vis_public'] ? 'public' : 'private',
               'image_name' => $result['image_name'],
               'payment_email' => $result['payment_email'],
+              'name' => $result['name'],
               'end' => $result['end'] ? 'history' : 'active'
             )
           );
