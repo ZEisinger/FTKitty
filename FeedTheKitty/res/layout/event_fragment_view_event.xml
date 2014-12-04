@@ -77,7 +77,45 @@
         android:id="@+id/event_detail_segment2"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight=".29"
+        android:layout_weight=".05"
+        android:background="#00FFFFFF"
+        android:orientation="horizontal"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/event_details_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/detail_host"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:typeface="sans" />
+
+        <TextView
+            android:id="@+id/event_detail_hostName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:scrollbars="vertical"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/event_detail_border_line1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".01"
+        android:orientation="vertical" />
+
+    <LinearLayout
+        android:id="@+id/event_detail_segment3"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".23"
         android:background="#08000000"
         android:orientation="vertical"
         android:weightSum="1" >
@@ -105,14 +143,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/event_detail_border_line1"
+        android:id="@+id/event_detail_border_line2"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".01"
         android:orientation="vertical" />
 
     <LinearLayout
-        android:id="@+id/event_detail_segment3"
+        android:id="@+id/event_detail_segment4"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".29"
@@ -129,14 +167,14 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/event_detail_border_line2"
+        android:id="@+id/event_detail_border_line3"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".01"
         android:orientation="vertical" />
 
     <LinearLayout
-        android:id="@+id/event_detail_segment4"
+        android:id="@+id/event_detail_segment5"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".15"
@@ -144,7 +182,7 @@
         android:weightSum="1" >
 
         <LinearLayout
-            android:id="@+id/event_detail_segment4.1"
+            android:id="@+id/event_detail_segment5.1"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight=".5"
@@ -164,7 +202,7 @@
         </LinearLayout>
 
         <LinearLayout
-            android:id="@+id/event_detail_segment4.2"
+            android:id="@+id/event_detail_segment5.2"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
             android:layout_weight=".5"

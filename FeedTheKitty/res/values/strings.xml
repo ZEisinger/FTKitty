@@ -17,7 +17,7 @@
     <!-- History -->
     <string name="history_detail_end">Event is ended</string>
     <string name="total_event_tag">Total Event Entered: </string>
-    <string name="total_amount_tag">Total Amount Donated: </string>
+    <string name="total_amount_tag">Total Amount Donated: $</string>
     <string name="thank_you">Thank you</string>
 
     <!-- Resources -->
@@ -53,5 +53,5 @@
 	<string name="event_payment_note">Note (required)</string>
 	<string name="btn_verify_venmo">Verify Venmo</string>
 	<string name="error_venmo_verify">You must verify your venmo account to create an event!</string>
-<!--     <string name="btn_logout">Log out</string> -->
+    <string name="detail_host">Host: </string>
 </resources>

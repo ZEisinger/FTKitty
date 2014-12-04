@@ -74,13 +74,51 @@
         android:id="@+id/history_detail_segment2"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
-        android:layout_weight=".6"
+        android:layout_weight=".05"
+        android:background="#00FFFFFF"
+        android:orientation="horizontal"
+        android:weightSum="1" >
+
+        <TextView
+            android:id="@+id/history_details_host"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:singleLine="true"
+            android:text="@string/detail_host"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:typeface="sans" />
+
+        <TextView
+            android:id="@+id/history_detail_hostName"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="end"
+            android:scrollbars="vertical"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/history_detail_border_line1"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".01"
+        android:orientation="vertical" />
+    
+    <LinearLayout
+        android:id="@+id/history_detail_segment3"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_weight=".54"
         android:background="#08000000"
         android:orientation="vertical"
         android:weightSum="1" >
 
         <TextView
-            android:id="@+id/history_detail_details"
+            android:id="@+id/hisory_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
@@ -95,19 +133,21 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="7"
+            android:scrollbars="vertical"
+            android:singleLine="false"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
-
+    
     <LinearLayout
-        android:id="@+id/history_detail_border_line1"
+        android:id="@+id/history_detail_border_line2"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".01"
         android:orientation="vertical" />
-
+    
     <LinearLayout
-        android:id="@+id/history_detail_segment3"
+        android:id="@+id/history_detail_segment4"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_weight=".14"

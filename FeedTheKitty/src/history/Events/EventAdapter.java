@@ -5,10 +5,12 @@ import java.util.List;
 
 import umd.cmsc.feedthekitty.R;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 public class EventAdapter extends ArrayAdapter<EventItem>{
@@ -19,6 +21,7 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 		TextView eventName;
 		TextView eventLocation;
 		TextView eventDescription;
+		ImageView eventIcon;
 		TextView eventDate;
 	}
 	
@@ -60,6 +63,7 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 			viewHolder.eventName = (TextView) row.findViewById(R.id.history_event_name);
 			viewHolder.eventLocation = (TextView) row.findViewById(R.id.history_location);
 			viewHolder.eventDescription = (TextView) row.findViewById(R.id.history_description);
+			viewHolder.eventIcon = (ImageView) row.findViewById(R.id.history_icon);
 			viewHolder.eventDate = (TextView) row.findViewById(R.id.history_date);
 			row.setTag(viewHolder);
 		}else{
@@ -72,6 +76,13 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 		viewHolder.eventLocation.setText(event.getEventLocation());
 		viewHolder.eventDescription.setText(event.getEventDescription());
 		viewHolder.eventDate.setText(event.getEventDate());
+		
+		if(event.getImageName() != null && !event.getImageName().isEmpty() && !event.getImageName().equals("null")){
+			Log.d("EVENT_NAME_ADAPTER", "NAME: " + event.getEventName());
+			Utils.Utils.loadImage(viewHolder.eventIcon, "http://cmsc436.striveforthehighest.com/storage/pictures/" + event.getImageName());
+		}else{
+			viewHolder.eventIcon.setImageDrawable(null);
+		}
 		
 		return row;
 	}
