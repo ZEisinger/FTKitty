@@ -46,6 +46,7 @@ public class PrivateEventListFragment extends Fragment{
 
 		privateEventList.setAdapter(privateEventAdapter);
 		
+		Log.d("FRIENDS", "FRIENDS: " + EventListFragment.currentUserFriends);
 		getEvents(EventListFragment.currentUserFriends);
 
 		privateEventList.setOnItemClickListener(new OnItemClickListener(){
@@ -84,7 +85,7 @@ public class PrivateEventListFragment extends Fragment{
 		Ion.with(getActivity())
 		.load("http://cmsc436.striveforthehighest.com/api/getEventList.php")
 		.progressBar(privateProgressBar)
-		.setBodyParameter("friend_list", friendsList)
+		.setBodyParameter("friend_list", friendsList + EventListFragment.currentUserID)
 	    .setBodyParameter("visibility", "private")
 		.asString()
 		.setCallback(new FutureCallback<String>() {
@@ -118,9 +119,17 @@ public class PrivateEventListFragment extends Fragment{
 								String userName = Messages.safeJSON(tObj, "username");
 								
 								Log.d("LIST", "NAME: " + eventName + "    " + "IMAGE: " + imageName);
-								EventItem event = new EventItem(eventName, eventLoc, eventDesc, eventHashTag, eventDate, imageName,
-										userName);
-								privateEventAdapter.add(event);
+								boolean isEnd = Utils.Utils.isEnd(eventDate, "");
+								if(isEnd){
+									Log.d("EVENT ENDED", "END: " + isEnd);
+									// Do nothing with event, it is over and should not be displayed
+									
+								}else{
+									EventItem event = new EventItem(eventName, eventLoc, eventDesc, eventHashTag, eventDate, imageName,
+											userName);
+									privateEventAdapter.add(event);
+								}
+
 							}
 						}
 					}

@@ -47,7 +47,8 @@ public class FriendsList {
 		                        firstName = user.getFirstName();
 		                    	Log.i(TAG, "FirstName: " + firstName);
 		                    	if(cbUserID != null){
-		                    		cbUserID.run(userId);
+		                    		String fullName = firstName + " " + user.getLastName();
+		                    		cbUserID.run(userId, fullName);
 		                    	}
 		                    }
 		                }
@@ -73,7 +74,7 @@ public class FriendsList {
 	                    	Log.i(TAG, "users: " + users);
 	                    	Log.i(TAG, "friendsList: " + friendsList);
 	                    	if(cbFriends != null){
-	                    		cbFriends.run(friendsList);
+	                    		cbFriends.run(friendsList, "");
 	                    	}
 	                    	setPrivateEvents();
 				        }
