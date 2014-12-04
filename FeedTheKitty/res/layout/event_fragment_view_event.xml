@@ -185,12 +185,12 @@
             android:id="@+id/event_detail_segment5.1"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight=".5"
+            android:layout_weight=".33"
             android:gravity="center"
             android:orientation="horizontal" >
 
             <com.beardedhen.androidbootstrap.BootstrapButton
-                android:id="@+id/btn_event_view_share"
+                android:id="@+id/btn_event_view_tweet"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
@@ -200,12 +200,31 @@
                 bootstrap:bb_type="primary" >
             </com.beardedhen.androidbootstrap.BootstrapButton>
         </LinearLayout>
-
-        <LinearLayout
+        
+         <LinearLayout
             android:id="@+id/event_detail_segment5.2"
             android:layout_width="0dp"
             android:layout_height="fill_parent"
-            android:layout_weight=".5"
+            android:layout_weight=".33"
+            android:gravity="center"
+            android:orientation="horizontal" >
+
+            <com.beardedhen.androidbootstrap.BootstrapButton
+                android:id="@+id/btn_event_view_share"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:text="@string/btn_share"
+                android:textSize="16sp"
+                bootstrap:bb_type="primary" >
+            </com.beardedhen.androidbootstrap.BootstrapButton>
+        </LinearLayout>
+
+        <LinearLayout
+            android:id="@+id/event_detail_segment5.3"
+            android:layout_width="0dp"
+            android:layout_height="fill_parent"
+            android:layout_weight=".33"
             android:gravity="center"
             android:orientation="horizontal" >
 

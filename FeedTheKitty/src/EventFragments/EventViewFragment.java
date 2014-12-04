@@ -114,7 +114,7 @@ public class EventViewFragment extends Fragment{
 
 		handler = new Handler();
 
-		btnShare = (BootstrapButton) getActivity().findViewById(R.id.btn_event_view_share);
+		btnShare = (BootstrapButton) getActivity().findViewById(R.id.btn_event_view_tweet);
 		btnShare.setOnClickListener(new OnClickListener() {
 
 			@Override

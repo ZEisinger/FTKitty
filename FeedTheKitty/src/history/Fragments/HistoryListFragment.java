@@ -10,6 +10,8 @@ import history.Events.EventAdapter;
 import history.Events.EventDetailFragment;
 import history.Events.EventItem;
 import EventFragments.EventListFragment;
+import EventFragments.EventViewFragment;
+import Utils.Utils;
 import Venmo.Messages;
 import android.app.Fragment;
 import android.app.FragmentManager;
@@ -26,6 +28,7 @@ import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.facebook.android.Util;
 import com.koushikdutta.async.future.FutureCallback;
 import com.koushikdutta.ion.Ion;
 
@@ -65,26 +68,43 @@ public class HistoryListFragment extends Fragment {
 					int position, long id) {
 				// TODO Auto-generated method stub
 
-				EventDetailFragment detail = new EventDetailFragment();
 				Bundle bundle = new Bundle();
-				bundle.putString("EventName", eventAdapter.getItem(position)
-						.getEventName());
 				bundle.putString("EventDate", eventAdapter.getItem(position)
 						.getEventDate());
 				bundle.putString("EventTime", eventAdapter.getItem(position)
 						.getEventTime());
 				bundle.putString("EventLocation", eventAdapter
 						.getItem(position).getEventLocation());
-				bundle.putString("EventDescription",
-						eventAdapter.getItem(position).getEventDescription());
-				bundle.putString("Username", eventAdapter.getItem(position).getUserName());
-				detail.setArguments(bundle);
-				bundle.putString("Payment", eventAdapter.getItem(position).getPayment());
-				detail.setArguments(bundle);
 
-				getFragmentManager().beginTransaction()
-						.replace(R.id.container, detail)
-						.addToBackStack("event_history_detail").commit();
+				if (Utils.isEnd(eventAdapter.getItem(position).getEventDate(),
+						eventAdapter.getItem(position).getEventTime())) {
+					bundle.putString("EventDescription",
+							eventAdapter.getItem(position).getEventDescription());
+					bundle.putString("EventName", eventAdapter.getItem(position)
+							.getEventName());
+					bundle.putString("Username", eventAdapter.getItem(position)
+							.getUserName());
+					bundle.putString("Payment", eventAdapter.getItem(position)
+							.getPayment());
+					EventDetailFragment detail = new EventDetailFragment();
+					detail.setArguments(bundle);
+
+					getFragmentManager().beginTransaction()
+							.replace(R.id.container, detail)
+							.addToBackStack("event_history_detail").commit();
+				} else {
+					bundle.putString("event_desc",
+							eventAdapter.getItem(position).getEventDescription());
+					bundle.putString("event_name", eventAdapter.getItem(position)
+							.getEventName());
+					bundle.putString("username", eventAdapter.getItem(position)
+							.getUserName());
+					EventViewFragment detail = new EventViewFragment();
+					detail.setArguments(bundle);
+					getFragmentManager().beginTransaction()
+							.replace(R.id.container, detail)
+							.addToBackStack("event_view").commit();
+				}
 			}
 
 		});
@@ -105,8 +125,8 @@ public class HistoryListFragment extends Fragment {
 	private void getEvents() {
 		Ion.with(getActivity())
 				.load("http://cmsc436.striveforthehighest.com/api/findHistory.php")
-				.setBodyParameter("username", "10152653701063649")
-				.asString().setCallback(new FutureCallback<String>() {
+				.setBodyParameter("username", EventListFragment.currentUserID).asString()
+				.setCallback(new FutureCallback<String>() {
 
 					@Override
 					public void onCompleted(Exception e, String result) {
