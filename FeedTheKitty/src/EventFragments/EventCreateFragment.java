@@ -381,6 +381,7 @@ public class EventCreateFragment extends Fragment{
 
 	}
 
+	@Override
 	public void onActivityResult(int requestCode, int resultCode, Intent data) {
 		if (resultCode == getActivity().RESULT_OK) {
 			if (requestCode == SELECT_PICTURE) {
