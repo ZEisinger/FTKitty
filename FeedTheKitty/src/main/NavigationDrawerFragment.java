@@ -141,7 +141,6 @@ public class NavigationDrawerFragment extends Fragment {
 						.findViewById(android.R.id.text1);
 				Typeface tf = Typeface.createFromAsset(getActivity()
 						.getAssets(), "Roboto-Black.ttf");
-
 				textView.setTextColor(Color.rgb(254, 137, 9));
 				textView.setTypeface(tf);
 				textView.setShadowLayer((float) 4, 6, 6,

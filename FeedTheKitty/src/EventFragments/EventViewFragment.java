@@ -37,6 +37,8 @@ import android.app.Fragment;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
@@ -57,11 +59,11 @@ public class EventViewFragment extends Fragment{
 
 	private BootstrapButton btnPay;
 	private BootstrapButton btnShare;
-	//private TextView txtEventName;
 	private TextView txtEventDesc;
 	private TextView txtEventDate;
 	private TextView txtEventTime;
 	private TextView txtEventLoc;
+	private TextView txtHostName;
 	private ImageView eventIcon;
 	private ListView tweetView;
 	private TwitterAdapter tweetAdapter;
@@ -79,12 +81,12 @@ public class EventViewFragment extends Fragment{
 		uiHelper.onCreate(savedInstanceState);
 
 		//This is used to post to Facebook, works, but my hash is not recognized, so commented out for now.
-//		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
-//		.setLink("")
-//		.setDescription("Message")
-//		.setApplicationName("FeedTheKitty")
-//		.build();
-//		uiHelper.trackPendingDialogCall(shareDialog.present());
+		//		FacebookDialog shareDialog = new FacebookDialog.ShareDialogBuilder(getActivity())
+		//		.setLink("")
+		//		.setDescription("Message")
+		//		.setApplicationName("FeedTheKitty")
+		//		.build();
+		//		uiHelper.trackPendingDialogCall(shareDialog.present());
 
 		String eventName = getArguments().getString("event_name");
 		String eventDesc = getArguments().getString("event_desc");
@@ -94,7 +96,7 @@ public class EventViewFragment extends Fragment{
 		getActivity().getActionBar().setTitle(
 				Html.fromHtml("<font color='#FE8909'>"
 						+ eventName + "</font>"));
-		
+
 		tweetView = (ListView) getActivity().findViewById(R.id.twitter_list_view);
 		tweetAdapter = new TwitterAdapter(getActivity().getApplicationContext(), R.layout.twitter_item);
 		tweetView.setAdapter(tweetAdapter);
@@ -105,6 +107,7 @@ public class EventViewFragment extends Fragment{
 		txtEventTime = (TextView) getActivity().findViewById(R.id.event_detail_time);
 		txtEventLoc = (TextView) getActivity().findViewById(R.id.event_detail_location);
 		eventIcon = (ImageView) getActivity().findViewById(R.id.event_detail_icon);
+		txtHostName = (TextView) getActivity().findViewById(R.id.event_detail_hostName);
 		txtEventDesc.setText(eventDesc);
 
 		getEvent(eventUserName, eventName);
@@ -341,6 +344,20 @@ public class EventViewFragment extends Fragment{
 							temp = Messages.safeJSON(id, "payment_email");
 							if(temp != null && !temp.isEmpty()){
 								paymentID = temp;
+							}
+						}
+
+						if(root.has("result") && root.getJSONObject("result").has("name")){
+							id = root.getJSONObject("result");
+							temp = Messages.safeJSON(id, "name");
+							if(temp != null && !temp.isEmpty()){
+								Typeface tf = Typeface.createFromAsset(getActivity()
+										.getAssets(), "MTLmr3m.ttf");
+								txtHostName.setTextColor(Color.rgb(163, 73, 164));
+								txtHostName.setTypeface(tf);
+								txtHostName.setShadowLayer((float) 4, 6, 6,
+										Color.rgb(254, 137, 9));
+								txtHostName.setText(temp);
 							}
 						}
 					}catch (JSONException w){
