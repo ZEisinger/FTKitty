@@ -115,11 +115,12 @@ public class PrivateEventListFragment extends Fragment{
 								String eventDesc = Messages.safeJSON(tObj, "description");
 								String eventHashTag = Messages.safeJSON(tObj, "hashtag");
 								String eventDate = Messages.safeJSON(tObj, "event_date");
+								String eventTime = Messages.safeJSON(tObj, "event_time");
 								String imageName = Messages.safeJSON(tObj, "image_name");
 								String userName = Messages.safeJSON(tObj, "username");
 								
 								Log.d("LIST", "NAME: " + eventName + "    " + "IMAGE: " + imageName);
-								boolean isEnd = Utils.Utils.isEnd(eventDate, "");
+								boolean isEnd = Utils.Utils.isEnd(eventDate, eventTime);
 								if(isEnd){
 									Log.d("EVENT ENDED", "END: " + isEnd);
 									// Do nothing with event, it is over and should not be displayed
