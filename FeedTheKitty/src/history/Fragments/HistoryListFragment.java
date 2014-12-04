@@ -1,5 +1,8 @@
 package history.Fragments;
 
+import org.json.JSONObject;
+import org.json.JSONTokener;
+
 import umd.cmsc.feedthekitty.R;
 import history.Events.EventAdapter;
 import history.Events.EventDetailFragment;
@@ -16,6 +19,9 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.AdapterView.OnItemClickListener;
 import android.widget.ListView;
+
+import com.koushikdutta.async.future.FutureCallback;
+import com.koushikdutta.ion.Ion;
 
 public class HistoryListFragment extends Fragment{
 
@@ -73,4 +79,55 @@ public class HistoryListFragment extends Fragment{
 		// The last parameter is false because the returned view does not need to be attached to the container ViewGroup
 		return inflater.inflate(R.layout.history_fragment_main, container, false);
 	}
+	
+//	private void getEvents(){
+//		Ion.with(getActivity())
+//		.load("http://cmsc436.striveforthehighest.com/api/getEventList.php")
+//		.progressBar(progressBar)
+//		.setBodyParameter("visibility", "public")
+//		.asString()
+//		.setCallback(new FutureCallback<String>() {
+//
+//			@Override
+//			public void onCompleted(Exception e, String result) {
+//				// TODO Auto-generated method stub
+//				Log.d("EVENT_LIST", "EVENT: " + result);
+//
+//				JSONTokener tokener = new JSONTokener(result);
+//
+//				try {
+//					JSONObject root = new JSONObject(tokener);
+//					
+//					String temp;
+//					if(root.has("errors")){
+//						temp = Messages.safeJSON(root, "errors");
+//						if(temp != null && !temp.isEmpty() && !temp.equals("null")){
+//							Log.d("ERROR", "Error: " + Messages.safeJSON(root, "errors"));
+//						}else if(root.has("result")){
+//							JSONArray arr = root.getJSONArray("result");
+//							for(int i = 0; i < arr.length(); i++){
+//								JSONObject tObj = arr.getJSONObject(i);
+//								String eventName = Messages.safeJSON(tObj, "event_name");
+//								String eventLoc = Messages.safeJSON(tObj, "location");
+//								String eventDesc = Messages.safeJSON(tObj, "description");
+//								String eventHashTag = Messages.safeJSON(tObj, "hashtag");
+//								String eventDate = Messages.safeJSON(tObj, "event_date");
+//								String imageName = Messages.safeJSON(tObj, "image_name");
+//								String userName = Messages.safeJSON(tObj, "username");
+//								
+//								Log.d("LIST", "NAME: " + eventName + "    " + "IMAGE: " + imageName);
+//								EventItem event = new EventItem(eventName, eventLoc, eventDesc, eventHashTag, eventDate, imageName,
+//										userName);
+//								eventAdapter.add(event);
+//							}
+//						}
+//					}
+//					
+//				} catch (JSONException e1) {
+//					// TODO Auto-generated catch block
+//					e1.printStackTrace();
+//				}
+//			}
+//
+//		});
 }
