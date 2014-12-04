@@ -98,7 +98,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:ellipsize="end"
-            android:singleLine="true"
+            android:maxLines="7"
+            android:scrollbars="vertical"
+            android:singleLine="false"
             android:textAppearance="?android:attr/textAppearanceSmall" />
     </LinearLayout>
 
@@ -174,8 +176,8 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:gravity="center"
-                android:textSize="16sp"
                 android:text="@string/donate_button_text"
+                android:textSize="16sp"
                 bootstrap:bb_icon_left="fa-money"
                 bootstrap:bb_type="success" >
             </com.beardedhen.androidbootstrap.BootstrapButton>

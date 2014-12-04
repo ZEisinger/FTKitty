@@ -40,6 +40,7 @@ import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
+import android.text.Html;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -90,8 +91,10 @@ public class EventViewFragment extends Fragment{
 		String eventUserName = getArguments().getString("username");
 		final String eventHashTag = getArguments().getString("event_hash_tag");
 
-		getActivity().getActionBar().setTitle(eventName);
-
+		getActivity().getActionBar().setTitle(
+				Html.fromHtml("<font color='#FE8909'>"
+						+ eventName + "</font>"));
+		
 		tweetView = (ListView) getActivity().findViewById(R.id.twitter_list_view);
 		tweetAdapter = new TwitterAdapter(getActivity().getApplicationContext(), R.layout.twitter_item);
 		tweetView.setAdapter(tweetAdapter);

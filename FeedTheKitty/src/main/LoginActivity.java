@@ -91,8 +91,8 @@ public class LoginActivity extends Activity {
 
 		@Override
 		public void onDestroy() {
+			uiHelper.onDestroy();
 		    super.onDestroy();
-		    uiHelper.onDestroy();
 		}
 
 		@Override
@@ -130,4 +130,10 @@ public class LoginActivity extends Activity {
 		    }
 		}
 	}
+	
+	@Override
+    public void onBackPressed()
+    {
+		finish();
+    }
 }

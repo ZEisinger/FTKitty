@@ -3,6 +3,7 @@ package history.Events;
 import umd.cmsc.feedthekitty.R;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,7 +24,8 @@ public class EventDetailFragment extends Fragment {
 
 		// TODO - implement the Activity
 		getActivity().getActionBar().setTitle(
-				getArguments().getString("EventName"));
+				Html.fromHtml("<font color='#FE8909'>"
+						+ getArguments().getString("EventName") + "</font>"));
 		icon = (ImageView) getActivity().findViewById(R.id.history_detail_icon);
 		eventDate = (TextView) getActivity().findViewById(
 				R.id.history_detail_date);
@@ -48,7 +50,7 @@ public class EventDetailFragment extends Fragment {
 		// Inflate the layout defined in quote_fragment.xml
 		// The last parameter is false because the returned view does not need
 		// to be attached to the container ViewGroup
-		return inflater.inflate(R.layout.history_event_detail, container,
-				false);
+		return inflater
+				.inflate(R.layout.history_event_detail, container, false);
 	}
 }
