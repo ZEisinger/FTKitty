@@ -56,4 +56,5 @@
 	<string name="btn_verify_venmo">Verify Venmo</string>
 	<string name="error_venmo_verify">You must verify your venmo account to create an event!</string>
     <string name="detail_host">Host: </string>
+    <string name="login_ic">Welcome</string>
 </resources>
