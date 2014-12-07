@@ -3,33 +3,33 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@drawable/card_background_selector"
+    android:baselineAligned="false"
     android:descendantFocusability="afterDescendants"
     android:orientation="horizontal"
     android:paddingBottom="5dp"
     android:paddingLeft="5dp"
     android:paddingRight="5dp"
     android:paddingTop="5dp"
-    android:weightSum="1"
-    android:baselineAligned="false" >
+    android:weightSum="1" >
 
     <LinearLayout
         android:id="@+id/history_item_segment1"
-        android:weightSum="1"
         android:layout_width="0dp"
         android:layout_height="fill_parent"
         android:layout_weight=".34"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:weightSum="1" >
 
         <ImageView
             android:id="@+id/history_icon"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
+            android:layout_weight=".9"
             android:background="#CCCCCC"
             android:contentDescription="@string/icon_description"
             android:padding="0dp"
-            android:layout_weight=".9"
             android:scaleType="fitXY" />
-        
+
         <TextView
             android:id="@+id/history_date"
             android:layout_width="wrap_content"
@@ -41,39 +41,49 @@
     <LinearLayout
         android:id="@+id/history_item_segment2"
         android:layout_width="0dp"
-        android:paddingLeft="10dp"
         android:layout_height="fill_parent"
         android:layout_weight=".66"
-        android:orientation="vertical" >
+        android:orientation="vertical"
+        android:paddingLeft="10dp" >
 
         <TextView
             android:id="@+id/history_event_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="24sp"
             android:paddingBottom="5dp"
-            android:typeface="normal"
+            android:textColor="#000000"
+            android:textSize="24sp"
             android:textStyle="bold"
-            android:textColor="#000000" />
+            android:typeface="normal" />
 
         <TextView
             android:id="@+id/history_location"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:paddingBottom="5dp"
-            android:typeface="monospace"
             android:textColor="@android:color/holo_blue_light"
-            android:textStyle="italic" />
+            android:textSize="18sp"
+            android:textStyle="italic"
+            android:typeface="monospace" />
 
         <TextView
             android:id="@+id/history_description"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:textSize="18sp"
             android:paddingBottom="5dp"
-            android:typeface="sans"
-            android:textColor="#000000" />
+            android:textColor="#000000"
+            android:textSize="18sp"
+            android:typeface="sans" />
+
+        <TextView
+            android:id="@+id/history_paid"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingBottom="5dp"
+            android:singleLine="true"
+            android:textSize="18sp"
+            android:textStyle="bold"
+            android:typeface="sans" />
     </LinearLayout>
 
 </LinearLayout>
