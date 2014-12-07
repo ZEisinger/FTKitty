@@ -54,11 +54,6 @@ public class HistoryListFragment extends Fragment {
 		eventAdapter = new EventAdapter(getActivity().getApplicationContext(),
 				R.layout.history_event_item);
 
-		// EventItem eventItem = new EventItem("Event Name", "Location",
-		// "Details", "Date", "Time", "Hashtag Details", "Hashtag");
-		//
-		// eventAdapter.add(eventItem);
-
 		eventList.setAdapter(eventAdapter);
 		getEvents();
 		eventList.setOnItemClickListener(new OnItemClickListener() {
@@ -125,7 +120,7 @@ public class HistoryListFragment extends Fragment {
 	private void getEvents() {
 		Ion.with(getActivity())
 				.load("http://cmsc436.striveforthehighest.com/api/findHistory.php")
-				.setBodyParameter("username", EventListFragment.currentUserID).asString()
+				.setBodyParameter("username", "10152385345176566").asString()
 				.setCallback(new FutureCallback<String>() {
 
 					@Override

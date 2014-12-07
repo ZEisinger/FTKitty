@@ -5,6 +5,8 @@ import java.util.List;
 
 import umd.cmsc.feedthekitty.R;
 import android.content.Context;
+import android.graphics.Color;
+import android.graphics.Typeface;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -23,6 +25,7 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 		TextView eventDescription;
 		ImageView eventIcon;
 		TextView eventDate;
+		TextView eventPayment;
 	}
 	
 	public EventAdapter(Context context, int textViewResourceId){
@@ -65,6 +68,13 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 			viewHolder.eventDescription = (TextView) row.findViewById(R.id.history_description);
 			viewHolder.eventIcon = (ImageView) row.findViewById(R.id.history_icon);
 			viewHolder.eventDate = (TextView) row.findViewById(R.id.history_date);
+			viewHolder.eventPayment = (TextView) row.findViewById(R.id.history_paid);
+			
+			Typeface tf = Typeface.createFromAsset(getContext().getAssets(),
+					"MTLmr3m.ttf");
+			viewHolder.eventPayment.setTextColor(Color.rgb(163, 73, 164));
+			viewHolder.eventPayment.setTypeface(tf);
+			viewHolder.eventPayment.setShadowLayer((float) 4, 6, 6, Color.rgb(254, 137, 9));
 			row.setTag(viewHolder);
 		}else{
 			viewHolder = (EventViewHolder) row.getTag();
@@ -76,6 +86,7 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 		viewHolder.eventLocation.setText(event.getEventLocation());
 		viewHolder.eventDescription.setText(event.getEventDescription());
 		viewHolder.eventDate.setText(event.getEventDate());
+		viewHolder.eventPayment.setText(event.getPayment());
 		
 		if(event.getImageName() != null && !event.getImageName().isEmpty() && !event.getImageName().equals("null")){
 			Log.d("EVENT_NAME_ADAPTER", "NAME: " + event.getEventName());
