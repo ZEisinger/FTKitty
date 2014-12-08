@@ -120,7 +120,7 @@ public class HistoryListFragment extends Fragment {
 	private void getEvents() {
 		Ion.with(getActivity())
 				.load("http://cmsc436.striveforthehighest.com/api/findHistory.php")
-				.setBodyParameter("username", "10152385345176566").asString()
+				.setBodyParameter("username", EventListFragment.currentUserID).asString()
 				.setCallback(new FutureCallback<String>() {
 
 					@Override
