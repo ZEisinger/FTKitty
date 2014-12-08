@@ -58,10 +58,7 @@ public class EventDetailFragment extends Fragment {
 		String eventName = getArguments().getString("EventName");
 		getEvent(eventUserName, eventName);
 
-		Typeface tf = Typeface.createFromAsset(getActivity().getAssets(),
-				"MTLmr3m.ttf");
 		eventPayment.setTextColor(Color.rgb(163, 73, 164));
-		eventPayment.setTypeface(tf);
 		eventPayment.setShadowLayer((float) 4, 6, 6, Color.rgb(254, 137, 9));
 	}
 
@@ -154,12 +151,8 @@ public class EventDetailFragment extends Fragment {
 									id = root.getJSONObject("result");
 									temp = Messages.safeJSON(id, "name");
 									if (temp != null && !temp.isEmpty()) {
-										Typeface tf = Typeface.createFromAsset(
-												getActivity().getAssets(),
-												"MTLmr3m.ttf");
 										eventHost.setTextColor(Color.rgb(163,
 												73, 164));
-										eventHost.setTypeface(tf);
 										eventHost.setShadowLayer((float) 4, 6,
 												6, Color.rgb(254, 137, 9));
 										eventHost.setText(temp);
