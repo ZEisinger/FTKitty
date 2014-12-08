@@ -70,10 +70,7 @@ public class EventAdapter extends ArrayAdapter<EventItem>{
 			viewHolder.eventDate = (TextView) row.findViewById(R.id.history_date);
 			viewHolder.eventPayment = (TextView) row.findViewById(R.id.history_paid);
 			
-			Typeface tf = Typeface.createFromAsset(getContext().getAssets(),
-					"MTLmr3m.ttf");
 			viewHolder.eventPayment.setTextColor(Color.rgb(163, 73, 164));
-			viewHolder.eventPayment.setTypeface(tf);
 			viewHolder.eventPayment.setShadowLayer((float) 4, 6, 6, Color.rgb(254, 137, 9));
 			row.setTag(viewHolder);
 		}else{

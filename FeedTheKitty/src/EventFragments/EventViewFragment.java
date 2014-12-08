@@ -369,10 +369,7 @@ public class EventViewFragment extends Fragment{
 							id = root.getJSONObject("result");
 							temp = Messages.safeJSON(id, "name");
 							if(temp != null && !temp.isEmpty()){
-								Typeface tf = Typeface.createFromAsset(getActivity()
-										.getAssets(), "MTLmr3m.ttf");
 								txtHostName.setTextColor(Color.rgb(163, 73, 164));
-								txtHostName.setTypeface(tf);
 								txtHostName.setShadowLayer((float) 4, 6, 6,
 										Color.rgb(254, 137, 9));
 								txtHostName.setText(temp);
